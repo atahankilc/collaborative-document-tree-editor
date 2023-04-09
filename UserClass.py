@@ -77,7 +77,6 @@ class User:
                 return ret
             else:
                 return "UNAUTHORIZED USER: ACTION DENIED"
-
         return is_authorized
 
     @auth_required
