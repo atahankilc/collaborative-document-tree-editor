@@ -1,21 +1,17 @@
 from UserClass import User
 
 user = User("user", "user@metu.edu.com.tr", "User", "user123456")
-print(user.getstatus())
+print(user.get())
 
-user.login()
-print(user.getstatus())
+user.update(username="other_user", fullname="Other User")
+print(user.get())
 
-user.auth("user123456")
-print(user.getstatus())
+user.update(email="other.user@metu.edu.tr")
+print(user.get())
 
-token = user.login()
-print(user.getstatus())
+user.update(username="user", email="user@metu.edu.com.tr", fullname="User", passwd="123user456")
+print(user.get())
 
-print(user.checksession(token))
-
-user.logout()
-print(user.getstatus())
-
-print(user.checksession(token))
+user.delete(username=True, email=True)
+print(user.get())
 

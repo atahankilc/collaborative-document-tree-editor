@@ -1,6 +1,7 @@
 import hashlib
 import os
 import uuid
+import json
 from enum import Enum
 
 
@@ -28,14 +29,46 @@ class User:
         self.status = User.Status.UNAUTHORIZED
         self.token = None
 
+    # CRUD operations
+    def get(self):
+        objectdict = {"username": self.username,
+                      "email": self.email,
+                      "fullname": self.fullname,
+                      "passwd": self.passwd}
+        return json.dumps(objectdict)
+
+    def update(self, username=None, email=None, fullname=None, passwd=None):
+        if username is not None:
+            self.username = username
+        if email is not None:
+            self.email = email
+        if fullname is not None:
+            self.fullname = fullname
+        if passwd is not None:
+            sha256 = hashlib.sha256()
+            sha256.update(passwd.encode())
+            self.passwd = sha256.hexdigest()
+
+    def delete(self, username=False, email=False, fullname=False, passwd=False):
+        if username is not False:
+            self.username = None
+        if email is not False:
+            self.email = None
+        if fullname is not False:
+            self.fullname = None
+        if passwd is not False:
+            self.passwd = None
+
     def auth(self, plainpass):
         sha256 = hashlib.sha256()
         sha256.update(plainpass.encode())
         given_passwd = sha256.hexdigest()
         if self.passwd == given_passwd:
             self.status = User.Status.AUTHORIZED
+            return True
         else:
             self.status = User.Status.UNAUTHORIZED
+            return False
 
     def auth_required(func):
         def is_authorized(self, *arg, **kw):
@@ -44,6 +77,7 @@ class User:
                 return ret
             else:
                 return "UNAUTHORIZED USER: ACTION DENIED"
+
         return is_authorized
 
     @auth_required
@@ -64,19 +98,6 @@ class User:
     def logout(self):
         self.status = User.Status.LOGGED_OUT
         self.token = None
-
-    # CRUD operations
-    # TODO
-    def get(self):
-        pass
-
-    # TODO
-    def update(self):
-        pass
-
-    # TODO
-    def delete(self):
-        pass
 
     # debugging
     def getstatus(self):
