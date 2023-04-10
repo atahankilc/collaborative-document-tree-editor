@@ -1,3 +1,4 @@
+from Decorators import auth_required
 from Enums import Status
 import hashlib
 import uuid
@@ -60,15 +61,6 @@ class User:
         else:
             self.status = Status.UNAUTHORIZED
             return False
-
-    def auth_required(func):
-        def is_authorized(self, *arg, **kw):
-            if self.status & Status.AUTHORIZED:
-                ret = func(self, *arg, **kw)
-                return ret
-            else:
-                return "UNAUTHORIZED USER: ACTION DENIED"
-        return is_authorized
 
     @auth_required
     def login(self):

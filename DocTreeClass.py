@@ -1,3 +1,4 @@
+from Decorators import update_users
 from ElementClass import Element
 from Enums import Occurs
 
@@ -10,15 +11,19 @@ class DocTree:
         self.element = Element(templfile["root"], self, 0)
         self.users = {}
 
+    @update_users(function_name="setName")
     def setName(self, name):
         self.name = name
 
+    @update_users(function_name="getElementById")
     def getElementById(self, id):
         pass
 
+    @update_users(function_name="getElementByPath")
     def getElementByPath(self, path):
         pass
 
+    @update_users(function_name="deleteElement")
     def deleteElement(self, id):
         pass
 
