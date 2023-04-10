@@ -1,17 +1,12 @@
 from UserClass import User
+from ElementClass import Element
+from DocTreeClass import DocTree
 
 user = User("user", "user@metu.edu.com.tr", "User", "user123456")
-print(user.get())
 
-user.update(username="other_user", fullname="Other User")
-print(user.get())
+templfile = {"root": 'document',
+             "elements": {"document": {"attrs": [], "children": ['meta'], "occurs": '1'},
+                          "meta": {"attrs": [], "children": [], "occurs": '?'}}}
+doctree = DocTree(templfile)
 
-user.update(email="other.user@metu.edu.tr")
-print(user.get())
-
-user.update(username="user", email="user@metu.edu.com.tr", fullname="User", passwd="123user456")
-print(user.get())
-
-user.delete(username=True, email=True)
-print(user.get())
-
+print("Breakpoint For Debugging")
