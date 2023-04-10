@@ -1,20 +1,11 @@
+from Enums import Status
 import hashlib
-import os
 import uuid
 import json
-from enum import Enum
+import os
 
 
 class User:
-    class Status(Enum):
-        UNAUTHORIZED = 0
-        AUTHORIZED = 1
-        LOGGED_IN = 11
-        LOGGED_OUT = 21
-
-        def __and__(self, other):
-            return self.value & other.value
-
     def __init__(self, username, email, fullname, passwd):
         self.username = username
         self.email = email
@@ -26,7 +17,7 @@ class User:
         self.passwd = sha256.hexdigest()
 
         # user status
-        self.status = User.Status.UNAUTHORIZED
+        self.status = Status.UNAUTHORIZED
         self.token = None
 
     # CRUD operations
@@ -64,15 +55,15 @@ class User:
         sha256.update(plainpass.encode())
         given_passwd = sha256.hexdigest()
         if self.passwd == given_passwd:
-            self.status = User.Status.AUTHORIZED
+            self.status = Status.AUTHORIZED
             return True
         else:
-            self.status = User.Status.UNAUTHORIZED
+            self.status = Status.UNAUTHORIZED
             return False
 
     def auth_required(func):
         def is_authorized(self, *arg, **kw):
-            if self.status & User.Status.AUTHORIZED:
+            if self.status & Status.AUTHORIZED:
                 ret = func(self, *arg, **kw)
                 return ret
             else:
@@ -81,7 +72,7 @@ class User:
 
     @auth_required
     def login(self):
-        self.status = User.Status.LOGGED_IN
+        self.status = Status.LOGGED_IN
         self.token = uuid.UUID(bytes=os.urandom(16), version=4).hex
         return self.token
 
@@ -95,7 +86,7 @@ class User:
 
     @auth_required
     def logout(self):
-        self.status = User.Status.LOGGED_OUT
+        self.status = Status.LOGGED_OUT
         self.token = None
 
     # debugging
