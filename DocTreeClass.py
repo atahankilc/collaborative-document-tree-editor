@@ -52,6 +52,6 @@ class DocTree:
 
         def changeChildrenArrToChildrenDict(self, templates):
             children_dict = {}
-            for index, child in enumerate(self.children):
+            for child in self.children:
                 children_dict[child] = templates[child]
             self.children = children_dict
