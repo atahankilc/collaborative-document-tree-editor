@@ -37,16 +37,27 @@ class Element:
             return self.text
 
     def insertChild(self, element, pos):
-        # TODO: check if element is compatible with template
-        # TODO: raise exception if element is not valid
+        child_count = self.count_child_occurrence(element.name)
+
+        if not self.check_child_occurrence(element.name, child_count + 1):
+            raise Exception("Child element cannot be inserted")
+
         element.parent = self
         self.children.insert(pos, element)
 
     def removeChild(self, pos):
-        pass
+        child = self.children[pos]
+        child_count = self.count_child_occurrence(child.name)
+
+        if not self.check_child_occurrence(child.name, child_count - 1):
+            raise Exception("Child element cannot be removed")
+
+        return self.children.pop(pos)
 
     def updateChild(self, element, pos):
-        pass
+        old_child = self.removeChild(pos)
+        self.insertChild(element, pos)
+        return old_child
 
     def setAttr(self, attr, value):
         self.attrs[attr] = value
@@ -61,3 +72,27 @@ class Element:
             child_template = self.doctree.templates[child]
             if child_template.occurs == Occurs.ONE or child_template.occurs == Occurs.ONE_MORE:
                 self.insertChild(Element(child, self.doctree), len(self.children))
+
+    def count_child_occurrence(self, child_name):
+        count = 0
+        for child in self.children:
+            if child.name == child_name:
+                count += 1
+        return count
+
+    def check_child_occurrence(self, child_name, child_count):
+        if child_name not in self.template.children:
+            return False
+
+        child_template = self.doctree.templates[child_name]
+
+        if child_template.occurs == Occurs.ZERO and child_count != 0:
+            return False
+        elif child_template.occurs == Occurs.ONE and child_count != 1:
+            return False
+        elif child_template.occurs == Occurs.ONE_MORE and child_count < 1:
+            return False
+        elif child_template.occurs == Occurs.ZERO_ONE and child_count > 1:
+            return False
+
+        return True
