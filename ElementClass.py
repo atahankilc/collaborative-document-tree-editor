@@ -50,6 +50,11 @@ class Element:
     def setAttr(self, attr, value):
         self.attrs[attr] = value
 
+    def traverse(self, func):
+        func(self)
+        for child in self.children:
+            child.traverse()
+
     def initialize_with_template(self):
         for child in self.template.children:
             child_template = self.doctree.templates[child]
