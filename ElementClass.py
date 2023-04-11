@@ -17,10 +17,14 @@ class Element:
         pass
 
     def getText(self):
-        pass
+        if self.template.hasTextualContent:
+            return self.text
 
     def insertChild(self, element, pos):
-        pass
+        # TODO: check if element is compatible with template
+        # TODO: raise exception if element is not valid
+
+        self.children.insert(pos, element)
 
     def removeChild(self, pos):
         pass
@@ -29,7 +33,7 @@ class Element:
         pass
 
     def setAttr(self, attr, value):
-        pass
+        self.attrs[attr] = value
 
     def initialize_with_template(self):
         for child in self.template.children:
