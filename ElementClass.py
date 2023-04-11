@@ -14,7 +14,22 @@ class Element:
         self.initialize_with_template()
 
     def getXML(self):
-        pass
+        xml = f"<{self.name} id='{self.id}'"
+
+        for attr, value in self.attrs.items():
+            xml += f" {attr}='{value}'"
+
+        if not self.children and not self.text:
+            return xml + "/>"
+        xml += ">"
+
+        for child in self.children:
+            xml += child.getXML()
+        xml += self.text
+
+        xml += f"</{self.name}>"
+
+        return xml
 
     def getText(self):
         if self.template.hasTextualContent:
