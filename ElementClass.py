@@ -11,6 +11,7 @@ class Element:
         self.children = []
         self.attrs = {}
         self.text = ""
+        self.parent = None
         self.initialize_with_template()
 
     def getXML(self):
@@ -38,7 +39,7 @@ class Element:
     def insertChild(self, element, pos):
         # TODO: check if element is compatible with template
         # TODO: raise exception if element is not valid
-
+        element.parent = self
         self.children.insert(pos, element)
 
     def removeChild(self, pos):
@@ -53,7 +54,7 @@ class Element:
     def traverse(self, func):
         func(self)
         for child in self.children:
-            child.traverse()
+            child.traverse(func)
 
     def initialize_with_template(self):
         for child in self.template.children:

@@ -15,10 +15,14 @@ templfile = {"root": 'document',
             }
 
 doctree = DocTree(templfile)
-print(doctree.element.getXML())
+print(doctree.root.getXML())
 
-doctree.attach(user1, lambda: print("callback called"))
-doctree.attach(user2, lambda: print("callback called"))
-doctree.getElementById(1)
+authorElement = Element("author", doctree, 1)
+metaElement = doctree.getElementByPath("document/meta")
+metaElement.insertChild(authorElement, 1)
+print(doctree.root.getXML())
+
+doctree.deleteElement(1)
+print(doctree.root.getXML())
 
 print("Breakpoint For Debugging")
