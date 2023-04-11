@@ -6,7 +6,7 @@ class Element:
     def __init__(self, name, doctree, id=None):
         self.name = name
         self.doctree = doctree
-        self.id = uuid.uuid4() if id is None else id
+        self.id = uuid.uuid4().int if id is None else id
         self.template = self.doctree.templates[name]
         self.children = []
         self.attrs = {}

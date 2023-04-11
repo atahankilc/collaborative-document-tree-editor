@@ -24,8 +24,7 @@ class DocTree:
         path_array.reverse()
         self.search_element(path_array=path_array)
         if self.searched_element is not None:
-            # TODO: return XML content
-            return self.searched_element
+            return self.searched_element.getXML()
 
     def deleteElement(self, id):
         self.search_element(id=id)
