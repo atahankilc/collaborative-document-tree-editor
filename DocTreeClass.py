@@ -44,7 +44,7 @@ class DocTree:
     def export(self, exptype, filename):
         pass
 
-    def search_element(self, id = None, path_array = None):
+    def search_element(self, id = None, path_array=None):
         def id_search(element):
             if element.id == id:
                 element.doctree.searched_element = element

@@ -7,12 +7,12 @@ user2 = User("user2", "user2@metu.edu.com.tr", "User2", "123456")
 
 templfile = {"root": 'document',
              "elements": {
-                "document": {"attrs": [], "children": ['meta'], "occurs": '1'},
-                "meta": {"attrs": [], "children": ['author', 'date', 'title'], "occurs": '1'},
-                "author": {"attrs": [], "children": [], "occurs": '?'},
-                "date": {"attrs": [], "children": [], "occurs": '?'},
-                "title": {"attrs": [], "children": [], "occurs": '1'}}
-            }
+                 "document": {"attrs": [], "children": ['meta'], "occurs": '1'},
+                 "meta": {"attrs": [], "children": ['author', 'date', 'title'], "occurs": '1'},
+                 "author": {"attrs": [], "children": [], "occurs": '?'},
+                 "date": {"attrs": [], "children": [], "occurs": '?'},
+                 "title": {"attrs": [], "children": [], "occurs": '1'}}
+             }
 
 doctree = DocTree(templfile)
 print(doctree.root.getXML())
