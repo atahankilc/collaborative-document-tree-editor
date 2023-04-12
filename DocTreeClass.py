@@ -31,7 +31,7 @@ class DocTree:
         if self.searched_element is not None:
             for index, child in enumerate(self.searched_element.parent.children):
                 if child == self.searched_element:
-                    self.searched_element.parent.children.pop(index)
+                    self.searched_element.parent.removeChild(index)
 
     def attach(self, user, callback):
         self.users[user] = callback
