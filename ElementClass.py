@@ -19,6 +19,8 @@ class Element:
         self.name = name
         self.doctree = doctree
         self.id = uuid.uuid4().int if id is None else id
+        if name not in self.doctree.templates:
+            raise Exception("Name is not valid")
         self.template = self.doctree.templates[name]
         self.children = []
         self.attrs = {}
