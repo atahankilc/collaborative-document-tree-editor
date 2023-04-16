@@ -2,6 +2,10 @@ from enum import Enum
 
 
 class Status(Enum):
+    """
+    Represents the authentication status codes that a user can have. Each status code is assigned a unique integer value.
+    """
+
     UNAUTHORIZED = 0
     AUTHORIZED = 1
     LOGGED_IN = 11
@@ -12,6 +16,9 @@ class Status(Enum):
 
 
 class Occurs(Enum):
+    """
+    Represents the possible occurrences of an element in a document. Each occurrence is assigned a unique integer value.
+    """
     ZERO = 1
     ONE = 10
     MORE = 100
@@ -24,6 +31,13 @@ class Occurs(Enum):
 
     @staticmethod
     def from_str(label):
+        """
+        Converts a string to an Occurs enum.
+
+        @param label: (str) the occurs symbol from the template to convert
+        @return: (Occurs) the corresponding Occurs enum
+        """
+        
         if label == "?":
             return Occurs.ZERO_ONE
         elif label == "*":
