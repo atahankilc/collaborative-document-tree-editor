@@ -26,7 +26,6 @@ class DocTree:
         if self.searched_element is not None:
             return self.searched_element.getXML()
 
-    @update_users(function_name="deleteElement")
     def deleteElement(self, id):
         self.search_element(id=id)
         if self.searched_element is not None:
