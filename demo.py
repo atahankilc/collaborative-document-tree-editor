@@ -286,6 +286,3 @@ def element_class_incorrect_getText():
     demo_element = constructor_element(name="demo_element_5")
     print(getText_element(demo_element))
     print("-------------------------------------------")
-
-
-element_class_getText()
