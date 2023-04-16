@@ -187,5 +187,6 @@ class DocTree:
 
             children_dict = {}
             for child in self.children:
-                children_dict[child] = templates[child]
+                if child != "text":
+                    children_dict[child] = templates[child]
             self.children = children_dict
