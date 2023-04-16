@@ -43,9 +43,12 @@ class Element:
             raise Exception("Child element cannot be inserted")
 
         element.parent = self
-        self.children.insert(pos, element)
+        self.children.insert(min(pos, len(self.children)), element)
 
     def removeChild(self, pos):
+        if pos >= len(self.children):
+            raise Exception("Child element does not exist")
+
         child = self.children[pos]
         child_count = self.count_child_occurrence(child.name)
 
@@ -55,8 +58,21 @@ class Element:
         return self.children.pop(pos)
 
     def updateChild(self, element, pos):
-        old_child = self.removeChild(pos)
-        self.insertChild(element, pos)
+        if pos >= len(self.children):
+            raise Exception("Child element does not exist")
+
+        old_child = self.children[pos]
+
+        if old_child.name == element.name:
+            self.children[pos] = element
+        else:
+            try:
+                self.removeChild(pos)
+            except Exception:
+                raise Exception("Child element cannot be updated")
+            else:
+                self.insertChild(element, pos)
+
         return old_child
 
     def setAttr(self, attr, value):
