@@ -16,21 +16,23 @@ class Element:
         self.users = doctree.users
         self.initialize_with_template()
 
-    def getXML(self):
-        xml = f"<{self.name} id='{self.id}'"
+    def getXML(self, level=0):
+        xml = f"{'    ' * level}<{self.name} id='{self.id}'"
 
         for attr, value in self.attrs.items():
             xml += f" {attr}='{value}'"
 
         if not self.children and not self.text:
-            return xml + "/>"
-        xml += ">"
+            return xml + "/>\n"
+        xml += ">\n"
 
         for child in self.children:
-            xml += child.getXML()
-        xml += self.text
+            xml += child.getXML(level + 1)
 
-        xml += f"</{self.name}>"
+        if self.text:
+            xml += f"{'    ' * (level + 1)}{self.text}\n"
+
+        xml += f"{'    ' * level}</{self.name}>\n"
 
         return xml
 
