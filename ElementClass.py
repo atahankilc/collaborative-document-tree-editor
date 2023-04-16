@@ -1,5 +1,6 @@
 import uuid
 from Enums import Occurs
+from Decorators import update_users
 
 
 class Element:
@@ -12,6 +13,7 @@ class Element:
         self.attrs = {}
         self.text = ""
         self.parent = None
+        self.users = doctree.users
         self.initialize_with_template()
 
     def getXML(self):
@@ -36,6 +38,7 @@ class Element:
         if self.template.hasTextualContent:
             return self.text
 
+    @update_users(function_name="insertChild")
     def insertChild(self, element, pos):
         child_count = self.count_child_occurrence(element.name)
 
@@ -45,6 +48,7 @@ class Element:
         element.parent = self
         self.children.insert(min(pos, len(self.children)), element)
 
+    @update_users(function_name="removeChild")
     def removeChild(self, pos):
         if pos >= len(self.children):
             raise Exception("Child element does not exist")
@@ -57,6 +61,7 @@ class Element:
 
         return self.children.pop(pos)
 
+    @update_users(function_name="updateChild")
     def updateChild(self, element, pos):
         if pos >= len(self.children):
             raise Exception("Child element does not exist")
@@ -75,6 +80,7 @@ class Element:
 
         return old_child
 
+    @update_users(function_name="setAttr")
     def setAttr(self, attr, value):
         self.attrs[attr] = value
 

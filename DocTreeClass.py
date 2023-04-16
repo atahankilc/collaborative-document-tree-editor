@@ -8,9 +8,9 @@ class DocTree:
     def __init__(self, templfile, importfile=None):
         self.name = "Unnamed"
         self.templates = DocTree.generate_templates(templfile["elements"])
-        self.root = Element(templfile["root"], self, 0)
         self.users = {}
         self.searched_element = None
+        self.root = Element(templfile["root"], self, 0)
 
     def setName(self, name):
         self.name = name
@@ -26,6 +26,7 @@ class DocTree:
         if self.searched_element is not None:
             return self.searched_element.getXML()
 
+    @update_users(function_name="deleteElement")
     def deleteElement(self, id):
         self.search_element(id=id)
         if self.searched_element is not None:
