@@ -37,7 +37,7 @@ class Occurs(Enum):
         @param label: (str) the occurs symbol from the template to convert
         @return: (Occurs) the corresponding Occurs enum
         """
-        
+
         if label == "?":
             return Occurs.ZERO_ONE
         elif label == "*":

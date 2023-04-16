@@ -120,7 +120,7 @@ class DocTree:
         def path_search(element):
             """
             Searches the element with the given path
-            
+
             @param element: (Element) the element to be searched
 
             @note The function traverses the path array and checks if the element has the same name as the current

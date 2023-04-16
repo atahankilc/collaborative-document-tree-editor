@@ -8,6 +8,17 @@ import os
 
 class User:
     def __init__(self, username, email, fullname, passwd):
+        """
+        User class constructor
+
+        @param username: (str) username of the user
+        @param email: (str) email of the user
+        @param fullname: (str) full name of the user
+        @param passwd: (str) password of the user
+
+        @note The password is hashed using SHA256.
+        """
+
         self.username = username
         self.email = email
         self.fullname = fullname
@@ -23,6 +34,10 @@ class User:
 
     # CRUD operations
     def get(self):
+        """
+        @return: (dict) a dictionary containing the user's information
+        """
+
         objectdict = {"username": self.username,
                       "email": self.email,
                       "fullname": self.fullname,
@@ -30,6 +45,15 @@ class User:
         return json.dumps(objectdict)
 
     def update(self, username=None, email=None, fullname=None, passwd=None):
+        """
+        Updates the user's information
+
+        @param username: (str) new username of the user
+        @param email: (str) new email of the user
+        @param fullname: (str) new name of the user
+        @param passwd: (str) new password of the user
+        """
+
         if username is not None:
             self.username = username
         if email is not None:
@@ -42,6 +66,15 @@ class User:
             self.passwd = sha256.hexdigest()
 
     def delete(self, username=False, email=False, fullname=False, passwd=False):
+        """
+        Deletes the user's information
+
+        @param username: (bool) if not False, username will be deleted
+        @param email: (bool) if not False, email will be deleted
+        @param fullname: (bool) if not False, fullname will be deleted
+        @param passwd: (bool) if not False, passwd will be deleted
+        """
+
         if username is not False:
             self.username = None
         if email is not False:
@@ -52,6 +85,15 @@ class User:
             self.passwd = None
 
     def auth(self, plainpass):
+        """
+        Authenticates the user and sets auth status
+
+        @param plainpass: (str) plain text password
+        @return: (bool) True if the password is correct, False otherwise
+
+        @note The given plain text password is hashed and compared with the stored password.
+        """
+
         sha256 = hashlib.sha256()
         sha256.update(plainpass.encode())
         given_passwd = sha256.hexdigest()
@@ -64,6 +106,11 @@ class User:
 
     @auth_required
     def login(self):
+        """
+        Logs the user in, generates a token, and sets status to LOGGED_IN
+
+        @return: (str) token of the user
+        """
         self.status = Status.LOGGED_IN
         self.token = uuid.UUID(bytes=os.urandom(16), version=4).hex
         return self.token
@@ -71,6 +118,13 @@ class User:
     # TODO
     @auth_required
     def checksession(self, token):
+        """
+        Checks if the user token is valid
+
+        @param token: (str) token of the user
+        @return: (str) "Valid" if the token is valid, "Invalid" otherwise
+        """
+
         if self.token == token:
             return "Valid"
         else:
@@ -78,9 +132,17 @@ class User:
 
     @auth_required
     def logout(self):
+        """
+        Logs the user out, deletes the token, and sets status to LOGGED_OUT
+        """
+
         self.status = Status.LOGGED_OUT
         self.token = None
 
     # debugging
     def getstatus(self):
+        """
+        @return: (Status) authentication status of the user
+        """
+
         return self.status
