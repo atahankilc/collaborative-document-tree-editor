@@ -69,15 +69,14 @@ class DocTree:
                 if child == self.searched_element:
                     self.searched_element.parent.removeChild(index)
 
-    def attach(self, user, callback):
+    def attach(self, user):
         """
         Attaches a user to the document tree
 
         @param user: (User) the user to be attached
-        @param callback: (function) the callback function of the user to be called when the document tree is updated
         """
 
-        self.users[user] = callback
+        self.users[user] = user.callback
 
     def detach(self, user):
         """
@@ -88,7 +87,7 @@ class DocTree:
 
         self.users.pop(user)
 
-    # export method will be implemented in Phase-2
+    # TODO
     def export(self, exptype, filename):
         pass
 
