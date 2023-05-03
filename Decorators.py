@@ -6,6 +6,7 @@ by calling the registered callback function with the appropriate action, argumen
 """
 
 
+# TODO: change update user decorator from calling callback to putting message to queue
 def update_users(function_name):
     def notify_users(func):
         def notify(self, *arg, **kw):
