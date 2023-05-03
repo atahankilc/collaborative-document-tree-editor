@@ -14,7 +14,6 @@ class Editor:
         with self.mutex:
             new_document = Document(templfile)
             self.documents[new_document.get_id()] = new_document
-            pass
 
     def list(self):
         with self.mutex:

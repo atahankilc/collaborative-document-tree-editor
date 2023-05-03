@@ -15,10 +15,6 @@ class Document:
         with self.mutex:
             self.doctree.setName(name)
 
-    def get_element_Text(self, id):
-        with self.mutex:
-            self.doctree.getElementById(id).getText()
-
     def insert_element(self, parent_id, element_name, element_pos, element_id = None):
         element = Element(name=element_name, doctree=self.doctree, id=element_id)
         with self.mutex:
@@ -38,13 +34,16 @@ class Document:
         # setAttr
         pass
 
-    # TODO: merge get_XML_by_path and get_element_XML
+    # TODO: merge get_XML_by_path, get_element_XML and get_element_text
     def get_XML_by_path(self, path):
         with self.mutex:
             return self.doctree.getElementByPath(path)
     def get_element_XML(self, id):
         with self.mutex:
             self.doctree.getElementById(id).getXML()
+    def get_element_text(self, id):
+        with self.mutex:
+            self.doctree.getElementById(id).getText()
 
     # TODO
     def export(self):
