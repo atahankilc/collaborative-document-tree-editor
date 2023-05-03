@@ -17,7 +17,7 @@ class Editor:
 
     def list(self):
         with self.mutex:
-            print(self.documents)
+            return str(self.documents)
 
     def open(self, document_id, user):
         with self.mutex:
