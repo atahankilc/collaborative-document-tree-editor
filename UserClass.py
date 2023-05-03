@@ -4,6 +4,7 @@ import hashlib
 import uuid
 import json
 import os
+import queue
 
 
 class User:
@@ -31,6 +32,9 @@ class User:
         # user status
         self.status = Status.UNAUTHORIZED
         self.token = None
+
+        self.callback = User._callback
+        self.message_queue = queue.Queue()
 
     # CRUD operations
     def get(self):
@@ -146,3 +150,7 @@ class User:
         """
 
         return self.status
+
+    @staticmethod
+    def _callback(message):
+        print("{}. args = {}, kwargs = {}".format(message["action"], message["arg"], message["kw"]))
