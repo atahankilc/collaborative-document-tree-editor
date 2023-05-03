@@ -1,10 +1,11 @@
 from Enums import Status
 
-
 """
 This function iterates over all attached users of document tree and notifies them of the change 
 by calling the registered callback function with the appropriate action, arguments, and keyword arguments.
 """
+
+
 def update_users(function_name):
     def notify_users(func):
         def notify(self, *arg, **kw):
@@ -31,6 +32,8 @@ def update_users(function_name):
 This function checks whether the user is authorized and returns an error message if not. 
 Otherwise, it calls the original function with the given arguments and returns its return value.
 """
+
+
 def auth_required(func):
     def is_authorized(self, *arg, **kw):
         if self.status & Status.AUTHORIZED:
@@ -40,3 +43,14 @@ def auth_required(func):
             return "UNAUTHORIZED USER: ACTION DENIED"
 
     return is_authorized
+
+
+def singleton(cls):
+    instances = {}
+
+    def get_instance(*args, **kwargs):
+        if cls not in instances:
+            instances[cls] = cls(*args, **kwargs)
+        return instances[cls]
+
+    return get_instance
