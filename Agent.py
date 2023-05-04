@@ -1,5 +1,6 @@
 import threading
 import UserClass
+import CommandHandler
 from Enums import Status
 
 
@@ -45,13 +46,16 @@ class Agent(threading.Thread):
                 self.client.close()
 
     def handle_requests(self):
+        command_handler = CommandHandler.CommandHandler(self.client)
+
         while True:
             self.client.send("Enter command: ".encode())
             command = self.client.recv(1024).decode().strip()
-            print(f"Received command: {command} from {self.user.username}")
-            # TODO: make calls based on command
-            if command == "close":
+
+            if command == "exit":
                 break
+            else:
+                command_handler.handle_command(command)
 
     # TODO
     def handle_notifications(self):
