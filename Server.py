@@ -30,6 +30,8 @@ class Agent(threading.Thread):
         self.client = client
         self.address = address
         self.user = None
+        self.request_handler_thread = None
+        self.notification_handler_thread = None
 
     def run(self):
         with self.client:
@@ -50,17 +52,31 @@ class Agent(threading.Thread):
                     if self.user.status == Status.UNAUTHORIZED:
                         self.client.send("Invalid username or password".encode())
 
-                while True:
-                    self.client.send("Enter command: ".encode())
-                    command = self.client.recv(1024).decode().strip()
-                    print(f"Received command: {command} from {self.user.username}")
-                    # TODO: make calls based on command
-                    if command == "close":
-                        break
+                self.request_handler_thread = threading.Thread(target=self.handle_requests)
+                self.request_handler_thread.start()
+
+                self.notification_handler_thread = threading.Thread(target=self.handle_notifications)
+                self.notification_handler_thread.start()
+
+                self.request_handler_thread.join()
+                self.notification_handler_thread.join()
             except Exception as e:
                 print(f"Exception: {e}")
             finally:
                 self.client.close()
+
+    def handle_requests(self):
+        while True:
+            self.client.send("Enter command: ".encode())
+            command = self.client.recv(1024).decode().strip()
+            print(f"Received command: {command} from {self.user.username}")
+            # TODO: make calls based on command
+            if command == "close":
+                break
+
+    # TODO
+    def handle_notifications(self):
+        pass
 
 
 if __name__ == "__main__":
