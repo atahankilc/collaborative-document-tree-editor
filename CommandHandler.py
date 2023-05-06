@@ -1,4 +1,4 @@
-import Editor
+from Editor import Editor
 
 
 class CommandHandler:
@@ -11,7 +11,7 @@ class CommandHandler:
             "close_document": self.close_document,
             "delete_document": self.delete_document,
         }
-        self.editor = Editor.Editor()
+        self.editor = Editor()
 
     def handle_command(self, command):
         parts = command.split()

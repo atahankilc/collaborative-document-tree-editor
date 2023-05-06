@@ -1,6 +1,6 @@
 import sys
 import socket
-import Agent
+from Agent import Agent
 
 
 class Server:
@@ -14,8 +14,10 @@ class Server:
         self.sock.listen()
 
         while True:
-            client, address = self.sock.accept()
-            agent = Agent.Agent(client, address)
+            print("Waiting for connection...")
+            conn, address = self.sock.accept()
+            print(f"Connection from {address}")
+            agent = Agent(conn, address)
             agent.start()
 
     def close(self):
