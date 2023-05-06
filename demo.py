@@ -288,18 +288,19 @@ def element_class_incorrect_getText():
     print("-------------------------------------------")
 
 
-
-# DocumetnInstancePerUser test class
-#class B:
-#    def method_1(self, arg1, **kwargs):
-#        print(arg1, kwargs)
-#    def method_2(self, *args, **kwargs):
-#        print(kwargs)
-#class A:
-#    def __init__(self):
-#        self.obj = B()
-#    def __getattr__(self, item):
-#        return getattr(self.obj, item)
-#    def get_method(self, method_name, *method_args):
-#        return getattr(self, method_name)(method_args, args1="as")
-#a = A()
+# DocumentInstancePerUser test
+# class B:
+#     def method_1(self, arg1, **kwargs):
+#         print(arg1, kwargs)
+#     def method_2(self, *args, **kwargs):
+#         print(kwargs)
+# class A:
+#     def __init__(self):
+#         self.obj = B()
+#     def __getattr__(self, item):
+#         return getattr(self.obj, item)
+#     def get_method(self, method_name, *method_args):
+#         return getattr(self, method_name)(method_args, additional_arg="additional_arg")
+# a = A()
+# a.get_method("method_1", "arg1")
+# a.get_method("method_2")
