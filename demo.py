@@ -286,3 +286,20 @@ def element_class_incorrect_getText():
     demo_element = constructor_element(name="demo_element_5")
     print(getText_element(demo_element))
     print("-------------------------------------------")
+
+
+
+# DocumetnInstancePerUser test class
+#class B:
+#    def method_1(self, arg1, **kwargs):
+#        print(arg1, kwargs)
+#    def method_2(self, *args, **kwargs):
+#        print(kwargs)
+#class A:
+#    def __init__(self):
+#        self.obj = B()
+#    def __getattr__(self, item):
+#        return getattr(self.obj, item)
+#    def get_method(self, method_name, *method_args):
+#        return getattr(self, method_name)(method_args, args1="as")
+#a = A()
