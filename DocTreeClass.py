@@ -85,7 +85,7 @@ class DocTree:
         @param user: (User) the user to be detached
         """
 
-        self.users.pop(user)
+        del self.users[user]
 
     # TODO
     def export(self, exptype, filename):
