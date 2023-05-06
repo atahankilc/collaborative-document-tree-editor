@@ -1,3 +1,4 @@
+import pickle
 from Editor import Editor
 
 
@@ -20,15 +21,14 @@ class CommandHandler:
         if cmd in self.commands:
             self.commands[cmd](*args)
         else:
-            self.client.send("Invalid command".encode())
+            self.client.send(pickle.dumps("Invalid command"))
 
     def new_document(self, template):
-        # TODO: template is received as a string, convert it to a dictionary
-        self.editor.new(template)
+        self.editor.new(eval(template))
 
     def list_documents(self):
         doc_list = self.editor.list()
-        self.client.send(doc_list.encode())
+        self.client.send(pickle.dumps(doc_list))
 
     def open_document(self, doc_id):
         self.editor.open(int(doc_id))
