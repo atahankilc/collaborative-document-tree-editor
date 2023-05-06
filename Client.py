@@ -41,9 +41,12 @@ class Client:
         return pickle.loads(serialized_data)
 
     def receive_loop(self):
-        while self.exit_flag is False:
-            data = self.receive()
-            print(data)
+        while not self.exit_flag:
+            try:
+                data = self.receive()
+                print(data)
+            except EOFError:
+                break
 
         self.close()
 

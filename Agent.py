@@ -13,6 +13,7 @@ class Agent(threading.Thread):
         self.conn = conn
         self.address = address
         self.user = None
+        self.exit_flag = False
         self.request_handler_thread = None
         self.notification_handler_thread = None
 
@@ -48,8 +49,6 @@ class Agent(threading.Thread):
                 self.notification_handler_thread.join()
             except Exception as e:
                 print(f"Exception: {e}")
-            finally:
-                self.conn.close()
 
     def receive(self):
         serialized_data = b''
@@ -69,6 +68,7 @@ class Agent(threading.Thread):
             command = pickle.loads(self.receive()).strip()
 
             if command == "exit":
+                self.exit_flag = True
                 break
             else:
                 command_handler.handle_command(command)
