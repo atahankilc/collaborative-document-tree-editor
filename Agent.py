@@ -35,7 +35,8 @@ class Agent(threading.Thread):
                     if self.user.status == Status.UNAUTHORIZED:
                         self.conn.send(pickle.dumps("Invalid username or password"))
 
-                print(f"User {self.user.username} logged in successfully")
+                self.conn.send(pickle.dumps(f"Welcome, {self.user.username}. You are now logged in.\nYou can write "
+                                            f"'help' to see the list of commands you can use.\n"))
 
                 self.request_handler_thread = threading.Thread(target=self.handle_requests)
                 self.request_handler_thread.start()
@@ -62,10 +63,9 @@ class Agent(threading.Thread):
         return serialized_data
 
     def handle_requests(self):
-        command_handler = CommandHandler(self.conn)
+        command_handler = CommandHandler(self.conn, self.user)
 
         while True:
-            self.conn.send(pickle.dumps("Enter command: "))
             command = pickle.loads(self.receive()).strip()
 
             if command == "exit":

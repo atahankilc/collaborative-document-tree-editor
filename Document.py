@@ -85,3 +85,6 @@ class Document:
 
     def get_id(self):
         return self._id
+
+    def __str__(self):
+        return f"{self.doctree.name} - {self._id}"

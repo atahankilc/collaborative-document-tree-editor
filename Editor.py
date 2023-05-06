@@ -16,16 +16,16 @@ class Editor:
 
     def list(self):
         with self.mutex:
-            return str(self.documents)
+            return [str(document) for document in self.documents.values()]
 
     def open(self, document_id, user):
         with self.mutex:
-            self.documents[document_id].add_user(user)
+            self.documents[document_id].add_user(user=user)
             return DocumentInstancePerUser(self.documents[document_id], user)
 
     def close(self, document_id, user):
         with self.mutex:
-            self.documents[document_id].remove_user(user)
+            self.documents[document_id].remove_user(user=user)
 
     def delete(self, document_id):
         with self.mutex:
