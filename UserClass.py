@@ -4,7 +4,7 @@ import hashlib
 import uuid
 import json
 import os
-import queue
+from threading import Lock, Condition
 
 
 class User:
@@ -33,8 +33,12 @@ class User:
         self.status = Status.UNAUTHORIZED
         self.token = None
 
+        # notification
         self.callback = User._callback
-        self.message_queue = queue.Queue()
+        self.message_queue = []
+        self.mutex = Lock()
+        self.cond = Condition(self.mutex)
+        self.threadContinueFlag = True
 
     # CRUD operations
     def get(self):
@@ -151,6 +155,10 @@ class User:
 
         return self.status
 
-    @staticmethod
-    def _callback(message):
-        print("{}. args = {}, kwargs = {}".format(message["action"], message["arg"], message["kw"]))
+    def _callback(self, **message):
+        self.threadContinueFlag = False
+        with self.mutex:
+            self.message_queue.append(
+                "{}. args = {}, kwargs = {}".format(message["action"], message["args"], message["kwargs"]))
+            self.threadContinueFlag = True
+            self.cond.notifyAll()
