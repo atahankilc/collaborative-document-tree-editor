@@ -3,16 +3,26 @@ import pickle
 
 
 class Client:
+    BUFFER_SIZE = 1024
+
     def __init__(self, port):
         self.port = port
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.connect(("localhost", self.port))
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.connect(("localhost", self.port))
 
     def send(self, data):
-        self.socket.sendall(pickle.dumps(data))
+        self.sock.sendall(pickle.dumps(data))
 
     def receive(self):
-        return pickle.loads(self.socket.recv(1024))
+        serialized_data = b''
+        while True:
+            chunk = self.sock.recv(self.BUFFER_SIZE)
+            if not chunk:
+                break
+            serialized_data += chunk
+            if len(chunk) < self.BUFFER_SIZE:
+                break
+        return pickle.loads(serialized_data)
 
     def close(self):
-        self.socket.close()
+        self.sock.close()

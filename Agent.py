@@ -6,6 +6,8 @@ from Enums import Status
 
 
 class Agent(threading.Thread):
+    BUFFER_SIZE = 1024
+
     def __init__(self, conn, address):
         threading.Thread.__init__(self)
         self.conn = conn
@@ -19,13 +21,13 @@ class Agent(threading.Thread):
             try:
                 while self.user is None or self.user.status == Status.UNAUTHORIZED:
                     self.conn.send(pickle.dumps("Enter username: "))
-                    username = pickle.loads(self.conn.recv(1024)).strip()
+                    username = pickle.loads(self.receive()).strip()
                     self.conn.send(pickle.dumps("Enter email: "))
-                    email = pickle.loads(self.conn.recv(1024)).strip()
+                    email = pickle.loads(self.receive()).strip()
                     self.conn.send(pickle.dumps("Enter fullname: "))
-                    fullname = pickle.loads(self.conn.recv(1024)).strip()
+                    fullname = pickle.loads(self.receive()).strip()
                     self.conn.send(pickle.dumps("Enter password: "))
-                    passwd = pickle.loads(self.conn.recv(1024)).strip()
+                    passwd = pickle.loads(self.receive()).strip()
 
                     self.user = User(username, email, fullname, passwd)
                     self.user.auth(passwd)
@@ -48,12 +50,23 @@ class Agent(threading.Thread):
             finally:
                 self.conn.close()
 
+    def receive(self):
+        serialized_data = b''
+        while True:
+            chunk = self.conn.recv(self.BUFFER_SIZE)
+            if not chunk:
+                break
+            serialized_data += chunk
+            if len(chunk) < self.BUFFER_SIZE:
+                break
+        return serialized_data
+
     def handle_requests(self):
         command_handler = CommandHandler(self.conn)
 
         while True:
             self.conn.send(pickle.dumps("Enter command: "))
-            command = pickle.loads(self.conn.recv(1024)).strip()
+            command = pickle.loads(self.receive()).strip()
 
             if command == "exit":
                 break
