@@ -5,7 +5,6 @@ from threading import *
 
 @singleton
 class Editor:
-
     def __init__(self):
         self.documents = {}
         self.mutex = Lock()
@@ -22,6 +21,7 @@ class Editor:
     def open(self, document_id, user):
         with self.mutex:
             self.documents[document_id].add_user(user)
+            return DocumentInstancePerUser(self.documents[document_id], user)
 
     def close(self, document_id, user):
         with self.mutex:
