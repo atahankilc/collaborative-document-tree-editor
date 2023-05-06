@@ -109,7 +109,7 @@ def deleteElement_doctree(doctree_object, id=None):
 
 
 def attach_doctree(doctree_object, user=demo_user_doctree, callback=demo_callback_doctree):
-    doctree_object.attach(user, callback)
+    doctree_object.attach(user)
     print_doctree(doctree_object)
 
 
@@ -123,21 +123,21 @@ def doctree_class_test_run():
     demo_doctree = constructor_doctree()
     print("- DocTree Class constructor -")
     print_doctree(demo_doctree)
-    print("- DocTree Class setName -")
-    setName_doctree(doctree_object=demo_doctree)
-    print("- DocTree Class getElementById -")
-    print(getElementById_doctree(doctree_object=demo_doctree))
-    print("- DocTree Class getElementByPath -")
-    print(getElementByPath_doctree(doctree_object=demo_doctree))
+    #print("- DocTree Class setName -")
+    #setName_doctree(doctree_object=demo_doctree)
+    #print("- DocTree Class getElementById -")
+    #print(getElementById_doctree(doctree_object=demo_doctree))
+    #print("- DocTree Class getElementByPath -")
+    #print(getElementByPath_doctree(doctree_object=demo_doctree))
     print("- DocTree Class attach -")
     attach_doctree(doctree_object=demo_doctree)
     print("- DocTree Class deleteElement / User Will Be Notified -")
     deleteElement_doctree(doctree_object=demo_doctree)
-    print("- DocTree Class detach -")
-    detach_doctree(doctree_object=demo_doctree)
-    print("- DocTree Class deleteElement / No User Will Be Notified -")
-    deleteElement_doctree(doctree_object=demo_doctree)
-    print("-------------------------------")
+    #print("- DocTree Class detach -")
+    #detach_doctree(doctree_object=demo_doctree)
+    #print("- DocTree Class deleteElement / No User Will Be Notified -")
+    #deleteElement_doctree(doctree_object=demo_doctree)
+    #print("-------------------------------")
 
 
 ####################################
@@ -165,7 +165,7 @@ demo_templfile_element = {"root": 'document',
 
 demo_user_element = UserClass.User("demo_user", "demo_user@metu.edu.tr", "demo user", "123")
 demo_doctree_element = DocTreeClass.DocTree(demo_templfile_element)
-demo_doctree_element.attach(demo_user_element, demo_callback_element)
+demo_doctree_element.attach(demo_user_element)
 
 
 def constructor_element(name="demo_element_1", doctree=demo_doctree_element, id="1"):
@@ -300,7 +300,7 @@ def element_class_incorrect_getText():
 #     def __getattr__(self, item):
 #         return getattr(self.obj, item)
 #     def get_method(self, method_name, *method_args):
-#         return getattr(self, method_name)(method_args, additional_arg="additional_arg")
+#         return getattr(self, method_name)(*method_args, additional_arg="additional_arg")
 # a = A()
 # a.get_method("method_1", "arg1")
 # a.get_method("method_2")
