@@ -23,7 +23,7 @@ class DocumentInstancePerUser:
             raise Exception("Document is closed by the user")
 
     def method_call(self, method_name, *method_args):
-        return getattr(self, method_name)(method_args, user=self.active_user,
+        return getattr(self, method_name)(*method_args, user=self.active_user,
                                           selected_element_id=self.selected_element_id)
 
 
@@ -34,56 +34,52 @@ class Document:
         self.doctree = DocTree(templfile)
         self.selected_element = None
 
-    # method_args = (child_element_name, child_element_id, child_element_pos, )
-    def insert_element(self, method_args, **kwargs):
-        new_element = Element(name=method_args[0], doctree=self.doctree, id=method_args[1])
+    def insert_element(self, child_element_name, child_element_id, child_element_pos, **kwargs):
+        new_element = Element(name=child_element_name, doctree=self.doctree, id=child_element_id)
         with self.mutex:
-            self.doctree.getElementById(kwargs["selected_element_id"]).insertChild(new_element, method_args[2])
+            self.doctree.getElementById(kwargs["selected_element_id"]).insertChild(new_element, child_element_pos)
 
-    # method_args = (action, path?, )
-    def get(self, method_args, **kwargs):
+    def get(self, action, path=None, **kwargs):
         with self.mutex:
-            if method_args[0] == "element_xml":
+            if action == "element_xml":
                 return self.doctree.getElementById(kwargs["selected_element_id"]).getXML()
-            elif method_args[0] == "element_text":
+            elif action == "element_text":
                 return self.doctree.getElementById(kwargs["selected_element_id"]).getText()
-            elif method_args[0] == "element_path":
-                return self.doctree.getElementByPath(method_args[1])
+            elif action == "element_path":
+                return self.doctree.getElementByPath(path)
 
     # method_args = (
-    #               action,
     #               (document_name|change_element_name|element_attr)?,
     #               (change_element_id|element_attr_value)?,
     #               (change_element_pos)?,
     #               )
-    def change(self, method_args, **kwargs):
+    def change(self, action, *method_args, **kwargs):
         with self.mutex:
-            if method_args[0] == "document_name":
-                self.doctree.setName(method_args[1])
-            elif method_args[0] == "element_update":
-                new_element = Element(name=method_args[1], doctree=self.doctree, id=method_args[2])
-                self.doctree.getElementById(kwargs["selected_element_id"]).updateChild(new_element, method_args[3])
-            elif method_args[0] == "element_attr":
-                self.doctree.getElementById(kwargs["selected_element_id"]).setAttr(method_args[1], method_args[2])
+            if action == "document_name":
+                self.doctree.setName(method_args[0])
+            elif action == "element_update":
+                new_element = Element(name=method_args[0], doctree=self.doctree, id=method_args[1])
+                self.doctree.getElementById(kwargs["selected_element_id"]).updateChild(new_element, method_args[2])
+            elif action == "element_attr":
+                self.doctree.getElementById(kwargs["selected_element_id"]).setAttr(method_args[0], method_args[1])
 
-    # method_args = (action, child_pos?, )
-    def delete(self, method_args, **kwargs):
+    def delete(self, action, child_pos=None, **kwargs):
         with self.mutex:
-            if method_args[0] == "element_id":
+            if action == "element_id":
                 self.doctree.deleteElement(kwargs["selected_element_id"])
-            elif method_args[0] == "element_child_pos":
-                self.doctree.getElementById(kwargs["selected_element_id"]).removeChild(method_args[1])
+            elif action == "element_child_pos":
+                self.doctree.getElementById(kwargs["selected_element_id"]).removeChild(child_pos)
 
     # TODO
     def export(self):
         with self.mutex:
             self.doctree.export(None, None)
 
-    def add_user(self, *args, **kwargs):
+    def add_user(self, **kwargs):
         with self.mutex:
             self.doctree.attach(kwargs["user"])
 
-    def remove_user(self, *args, **kwargs):
+    def remove_user(self, **kwargs):
         with self.mutex:
             self.doctree.detach(kwargs["user"])
 
