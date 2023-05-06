@@ -1,4 +1,5 @@
 from Enums import Status
+from threading import Thread
 
 """
 This function iterates over all attached users of document tree and notifies them of the change 
@@ -9,22 +10,30 @@ by calling the registered callback function with the appropriate action, argumen
 # TODO: change update user decorator from calling callback to putting message to queue
 def update_users(function_name):
     def notify_users(func):
-        def notify(self, *arg, **kw):
-            if function_name == "removeChild":
-                for user in self.users:
-                    self.users[user](action="Element deleted/removed", arg=arg, kw=kw)
-            elif function_name == "insertChild":
-                for user in self.users:
-                    self.users[user](action="Element inserted", arg=arg, kw=kw)
-            elif function_name == "updateChild":
-                for user in self.users:
-                    self.users[user](action="Element updated", arg=arg, kw=kw)
-            elif function_name == "setAttr":
-                for user in self.users:
-                    self.users[user](action="Element attribute changed", arg=arg, kw=kw)
-            return func(self, *arg, **kw)
+        def notify(users, action, args, kwargs):
+            if len(users) > 0:
+                for user in users:
+                    users[user](user, action=action, args=args, kwargs=kwargs)
 
-        return notify
+        def execute(self, *args, **kwargs):
+            action = None
+            if function_name == "removeChild":
+                action = "Element deleted/removed"
+            elif function_name == "insertChild":
+                action = "Element inserted"
+            elif function_name == "updateChild":
+                action = "Element updated"
+            elif function_name == "setAttr":
+                action = "Element attribute changed"
+            else:
+                action = "Undefined action"
+            th = Thread(target=notify, args=(self.users, action, args, kwargs))
+            th.start()
+            ret = func(self, *args, **kwargs)
+            th.join()
+            return ret
+
+        return execute
 
     return notify_users
 
