@@ -1,5 +1,6 @@
 import threading
 import pickle
+import re
 from UserClass import User
 from CommandHandler import CommandHandler
 from Enums import Status
@@ -7,6 +8,7 @@ from Enums import Status
 
 class Agent(threading.Thread):
     BUFFER_SIZE = 1024
+    EMAIL_REGEX = r"^\S+@\S+\.\S+$"
 
     def __init__(self, conn, address):
         threading.Thread.__init__(self)
@@ -23,8 +25,14 @@ class Agent(threading.Thread):
                 while self.user is None or self.user.status == Status.UNAUTHORIZED:
                     self.conn.send(pickle.dumps("Enter username: "))
                     username = pickle.loads(self.receive()).strip()
-                    self.conn.send(pickle.dumps("Enter email: "))
-                    email = pickle.loads(self.receive()).strip()
+
+                    while True:
+                        self.conn.send(pickle.dumps("Enter email: "))
+                        email = pickle.loads(self.receive()).strip()
+                        if re.fullmatch(self.EMAIL_REGEX, email):
+                            break
+                        self.conn.send(pickle.dumps("Please enter a valid email address"))
+
                     self.conn.send(pickle.dumps("Enter fullname: "))
                     fullname = pickle.loads(self.receive()).strip()
                     self.conn.send(pickle.dumps("Enter password: "))
