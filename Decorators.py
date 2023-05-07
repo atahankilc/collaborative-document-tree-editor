@@ -1,5 +1,4 @@
 from Enums import Status
-from threading import Thread
 
 """
 This function iterates over all attached users of document tree and notifies them of the change 
@@ -28,10 +27,12 @@ def update_users(function_name):
                     users[user](user, action=action, args=args, kwargs=kwargs)
 
         def execute(self, *args, **kwargs):
-            th = Thread(target=notify, args=(self.users, args, kwargs))
-            th.start()
-            ret = func(self, *args, **kwargs)
-            th.join()
+            ret = None
+            try:
+                ret = func(self, *args, **kwargs)
+            except Exception as e:
+                raise e
+            notify(self.users, args, kwargs)
             return ret
 
         return execute
