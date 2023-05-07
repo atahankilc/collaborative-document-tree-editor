@@ -69,7 +69,8 @@ class Agent(threading.Thread):
 
             if command == "exit":
                 self.exit_flag = True
-                self.user.cond.notify()
+                with self.user.mutex:
+                    self.user.cond.notify()
                 break
             else:
                 command_handler.handle_command(command)
