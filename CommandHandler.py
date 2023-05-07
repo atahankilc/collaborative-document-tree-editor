@@ -43,7 +43,7 @@ class CommandHandler:
             "get_element_xml": (0, 0),
             "get_element_text": (0, 0),
             "get_element_path": (0, 0),
-            "export": (3, 3),
+            "export": (2, 3),
             "exit": (0, 0)
         }
         self.editor = Editor()
