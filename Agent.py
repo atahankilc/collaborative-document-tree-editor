@@ -66,14 +66,13 @@ class Agent(threading.Thread):
 
         while True:
             command = pickle.loads(self.receive()).strip()
+            command_handler.handle_command(command)
 
             if command == "exit":
                 self.exit_flag = True
                 with self.user.mutex:
                     self.user.cond.notify()
                 break
-            else:
-                command_handler.handle_command(command)
 
     def handle_notifications(self):
         while True:
