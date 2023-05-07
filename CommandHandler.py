@@ -25,6 +25,25 @@ class CommandHandler:
             "get_element_path": self.get_element_path,
             "export": self.export,
         }
+        self.commandArgCount = {
+            "help": (0, 0),
+            "new_document": (1, 1),
+            "list_documents": (0, 0),
+            "open_document": (1, 1),
+            "close_document": (0, 0),
+            "get_current_document_id": (0, 0),
+            "delete_document": (1, 1),
+            "set_document_name": (1, 1),
+            "select_element": (1, 1),
+            "insert_element": (2, 3),
+            "update_element": (2, 3),
+            "set_element_attribute": (2, 2),
+            "delete_element": (0, 1),
+            "get_element_xml": (0, 0),
+            "get_element_text": (0, 0),
+            "get_element_path": (0, 0),
+            "export": (3, 3)
+        }
         self.editor = Editor()
         self.current_document = None
 
@@ -33,7 +52,10 @@ class CommandHandler:
         cmd = parts[0]
         args = parts[1:]
         if cmd in self.commands:
-            self.commands[cmd](*args)
+            if self.commandArgCount[cmd][0] <= len(args) <= self.commandArgCount[cmd][1]:
+                self.commands[cmd](*args)
+            else:
+                self.client.send(pickle.dumps("Unmatched argument count"))
         else:
             self.client.send(pickle.dumps("Invalid command"))
 
@@ -43,21 +65,19 @@ class CommandHandler:
             "new_document <doctree_template>": "creates a new document from given template",
             "list_documents": "lists all documents",
             "open_document <document_id>": "opens the document with given id",
-            "close_document <document_id>": "closes the document with given id",
+            "close_document": "closes the currently opened document",
             "get_current_document_id": "returns the id of the open document",
             "delete_document <document_id>": "deletes the document with given id",
             "set_document_name <new_name>": "sets the name of the open document to given name",
             "select_element <element_id>": "selects the element with given id",
-            "insert_element <element_type> <element_id> <position>": "inserts a new element of given type and id at "
-                                                                     "given position (to generate the new element "
-                                                                     "with a random id use 0)",
-            "update_element <element_type> <element_id> <position>": "changes the element at given position to the "
-                                                                     "element of given type and id (to generate the "
-                                                                     "new element with a random id use 0)",
+            "insert_element <element_type> <position> <element_id>? ": "inserts a new element of given type and id at "
+                                                                       "given position",
+            "update_element <element_type> <position> <element_id>?": "changes the element at given position to the "
+                                                                      "element of given type and id",
             "set_element_attribute <attr_name> <attr_value>": "sets the attribute of the selected element to given "
                                                               "value",
-            "delete_element": "deletes the selected element",
-            "delete_element <element_position>": "deletes the child element at given position",
+            "delete_element <element_position>?": "deletes the selected element if element_position is not given, else"
+                                                  "deletes the child element of the selected element at given position",
             "get_element_xml": "returns the xml of the selected element",
             "get_element_text": "returns the text of the selected element",
             "get_element_path": "returns the xml of the given element path",
@@ -154,7 +174,7 @@ class CommandHandler:
         else:
             self.client.send(pickle.dumps("Element selected successfully"))
 
-    def insert_element(self, element_type, element_id, position):
+    def insert_element(self, element_type, position, element_id=0):
         try:
             if self.current_document is None:
                 self.client.send(pickle.dumps("There is no open document"))
@@ -166,7 +186,7 @@ class CommandHandler:
         else:
             self.client.send(pickle.dumps("Element inserted successfully"))
 
-    def update_element(self, element_type, element_id, position):
+    def update_element(self, element_type, position, element_id=0):
         try:
             if self.current_document is None:
                 self.client.send(pickle.dumps("There is no open document"))
