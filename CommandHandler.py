@@ -24,6 +24,7 @@ class CommandHandler:
             "get_element_text": self.get_element_text,
             "get_element_path": self.get_element_path,
             "export": self.export,
+            "exit": self.exit
         }
         self.commandArgCount = {
             "help": (0, 0),
@@ -42,14 +43,15 @@ class CommandHandler:
             "get_element_xml": (0, 0),
             "get_element_text": (0, 0),
             "get_element_path": (0, 0),
-            "export": (3, 3)
+            "export": (3, 3),
+            "exit": (0, 0)
         }
         self.editor = Editor()
         self.current_document = None
 
     def handle_command(self, command):
         parts = command.split()
-        cmd = parts[0]
+        cmd = parts[0] if len(parts) > 0 else ""
         args = parts[1:]
         if cmd in self.commands:
             if self.commandArgCount[cmd][0] <= len(args) <= self.commandArgCount[cmd][1]:
@@ -263,3 +265,7 @@ class CommandHandler:
             self.client.send(pickle.dumps(f"a problem occurred while exporting the document: {e}"))
         else:
             self.client.send(pickle.dumps(f"Document exported successfully to {export_path}"))
+
+    def exit(self):
+        if self.current_document is not None:
+            self.close_document()
