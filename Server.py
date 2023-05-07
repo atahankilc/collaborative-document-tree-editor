@@ -18,6 +18,20 @@ class Server:
                 self.user_dict[userObj["username"]] = User(userObj["username"], userObj["email"], userObj["fullname"],
                                                            userObj["password"])
 
+    def add_new_user(self, user, plainpass):
+        self.user_dict[user.username] = user
+        with open("database.json", "r") as f:
+            data = json.load(f)
+            data["users"].append({
+                "username": user.username,
+                "email": user.email,
+                "fullname": user.fullname,
+                "password": plainpass
+            })
+
+        with open("database.json", "w") as f:
+            json.dump(data, f, indent=4)
+
     def start(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.bind(("localhost", self.port))
@@ -27,7 +41,7 @@ class Server:
             print("Waiting for connection...")
             conn, address = self.sock.accept()
             print(f"Connection from {address}")
-            agent = Agent(conn, address, self.user_dict)
+            agent = Agent(conn, address, self)
             agent.start()
 
     def close(self):

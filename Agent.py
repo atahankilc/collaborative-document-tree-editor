@@ -10,11 +10,11 @@ class Agent(threading.Thread):
     BUFFER_SIZE = 1024
     EMAIL_REGEX = r"^\S+@\S+\.\S+$"
 
-    def __init__(self, conn, address, user_dict):
+    def __init__(self, conn, address, server):
         threading.Thread.__init__(self)
         self.conn = conn
         self.address = address
-        self.user_dict = user_dict
+        self.server = server
         self.user = None
         self.exit_flag = False
         self.request_handler_thread = None
@@ -24,23 +24,48 @@ class Agent(threading.Thread):
         with self.conn:
             try:
                 while self.user is None or self.user.status == Status.UNAUTHORIZED:
-                    self.conn.send(pickle.dumps("Enter username: "))
-                    username = pickle.loads(self.receive()).strip()
+                    self.conn.send(pickle.dumps("You need to register or login to use collaborative document tree "
+                                                "editor\nPlease write 'register' or 'login' to continue: "))
+                    auth_type = pickle.loads(self.receive()).strip()
 
-                    while True:
-                        self.conn.send(pickle.dumps("Enter email: "))
-                        email = pickle.loads(self.receive()).strip()
-                        if re.fullmatch(self.EMAIL_REGEX, email):
-                            break
-                        self.conn.send(pickle.dumps("Please enter a valid email address"))
+                    if auth_type == "register":
+                        while True:
+                            self.conn.send(pickle.dumps("Enter username: "))
+                            username = pickle.loads(self.receive()).strip()
+                            if username in self.server.user_dict:
+                                self.conn.send(pickle.dumps("Username already exists. Please choose another username"))
+                            else:
+                                break
 
-                    self.conn.send(pickle.dumps("Enter fullname: "))
-                    fullname = pickle.loads(self.receive()).strip()
-                    self.conn.send(pickle.dumps("Enter password: "))
-                    passwd = pickle.loads(self.receive()).strip()
+                        while True:
+                            self.conn.send(pickle.dumps("Enter email: "))
+                            email = pickle.loads(self.receive()).strip()
+                            if re.fullmatch(self.EMAIL_REGEX, email):
+                                break
+                            self.conn.send(pickle.dumps("Please enter a valid email address"))
 
-                    self.user = User(username, email, fullname, passwd)
-                    self.user.auth(passwd)
+                        self.conn.send(pickle.dumps("Enter fullname: "))
+                        fullname = pickle.loads(self.receive()).strip()
+                        self.conn.send(pickle.dumps("Enter password: "))
+                        passwd = pickle.loads(self.receive()).strip()
+
+                        self.user = User(username, email, fullname, passwd)
+                        self.user.auth(passwd)
+                        self.server.add_new_user(self.user, passwd)
+                    elif auth_type == "login":
+                        self.conn.send(pickle.dumps("Enter username: "))
+                        username = pickle.loads(self.receive()).strip()
+                        try:
+                            self.user = self.server.user_dict[username]
+                        except KeyError:
+                            self.conn.send(pickle.dumps("You are not registered. Please register first."))
+                            continue
+                        self.conn.send(pickle.dumps("Enter password: "))
+                        passwd = pickle.loads(self.receive()).strip()
+                        self.user.auth(passwd)
+                    else:
+                        self.conn.send(pickle.dumps("Invalid command. Please write 'register' or 'login' to continue"))
+                        continue
 
                     if self.user.status == Status.UNAUTHORIZED:
                         self.conn.send(pickle.dumps("Invalid username or password"))
