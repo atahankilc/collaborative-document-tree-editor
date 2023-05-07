@@ -69,8 +69,9 @@ class CommandHandler:
 
         self.client.send(pickle.dumps(help_response))
 
-    def new_document(self, template):
+    def new_document(self, *template_args):
         try:
+            template = " ".join(template_args)
             self.editor.new(eval(template))
         except Exception as e:
             self.client.send(pickle.dumps(f"a problem occurred while creating the document: {e}"))
