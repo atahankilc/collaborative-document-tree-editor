@@ -1,12 +1,22 @@
-import sys
-import socket
+from UserClass import User
 from Agent import Agent
+import socket
+import json
+import sys
 
 
 class Server:
     def __init__(self, port):
         self.port = port
         self.sock = None
+        self.user_dict = {}
+        self._get_user_dict()
+
+    def _get_user_dict(self):
+        with open("database.JSON", "r") as f:
+            for userObj in json.load(f)["users"]:
+                self.user_dict[userObj["username"]] = User(userObj["username"], userObj["email"], userObj["fullname"],
+                                                           userObj["password"])
 
     def start(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -17,7 +27,7 @@ class Server:
             print("Waiting for connection...")
             conn, address = self.sock.accept()
             print(f"Connection from {address}")
-            agent = Agent(conn, address)
+            agent = Agent(conn, address, self.user_dict)
             agent.start()
 
     def close(self):

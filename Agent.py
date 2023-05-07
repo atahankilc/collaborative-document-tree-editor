@@ -10,10 +10,11 @@ class Agent(threading.Thread):
     BUFFER_SIZE = 1024
     EMAIL_REGEX = r"^\S+@\S+\.\S+$"
 
-    def __init__(self, conn, address):
+    def __init__(self, conn, address, user_dict):
         threading.Thread.__init__(self)
         self.conn = conn
         self.address = address
+        self.user_dict = user_dict
         self.user = None
         self.exit_flag = False
         self.request_handler_thread = None
