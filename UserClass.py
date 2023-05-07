@@ -159,6 +159,7 @@ class User:
         self.threadContinueFlag = False
         with self.mutex:
             self.message_queue.append(
-                "{}. args = {}, kwargs = {}".format(message["action"], message["args"], message["kwargs"]))
+                "{}. args = {}, kwargs = {}, ret = {}".format(message["action"], message["args"], message["kwargs"],
+                                                              message["ret"]))
             self.threadContinueFlag = True
             self.cond.notifyAll()

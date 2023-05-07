@@ -8,7 +8,7 @@ by calling the registered callback function with the appropriate action, argumen
 
 def update_users(function_name):
     def notify_users(func):
-        def notify(users, args, kwargs):
+        def notify(users, args, kwargs, ret):
             action = None
             if function_name == "removeElement":
                 action = "Element deleted/removed"
@@ -19,12 +19,12 @@ def update_users(function_name):
             elif function_name == "setElementAttr":
                 action = "Element attribute changed"
             elif function_name == "setDocumentName":
-                action = "Document name changed."
+                action = "Document name changed"
             else:
                 action = "Undefined action"
             if len(users) > 0:
                 for user in users:
-                    users[user](user, action=action, args=args, kwargs=kwargs)
+                    users[user](user, action=action, args=args, kwargs=kwargs, ret=ret)
 
         def execute(self, *args, **kwargs):
             ret = None
@@ -32,7 +32,7 @@ def update_users(function_name):
                 ret = func(self, *args, **kwargs)
             except Exception as e:
                 raise e
-            notify(self.users, args, kwargs)
+            notify(self.users, args, kwargs, ret)
             return ret
 
         return execute

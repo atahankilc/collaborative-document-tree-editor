@@ -160,8 +160,6 @@ class CommandHandler:
                 self.current_document.method_call("change", "document_name", document_name)
         except Exception as e:
             self.client.send(pickle.dumps(f"a problem occurred while setting the document name: {e}"))
-        else:
-            self.client.send(pickle.dumps("Document name changed successfully"))
 
     def select_element(self, element_id):
         try:
@@ -185,8 +183,6 @@ class CommandHandler:
                 self.current_document.method_call("insert_element", element_type, element_id, int(position))
         except Exception as e:
             self.client.send(pickle.dumps(f"a problem occurred while inserting the element: {e}"))
-        else:
-            self.client.send(pickle.dumps("Element inserted successfully"))
 
     def update_element(self, element_type, position, element_id=0):
         try:
@@ -197,8 +193,6 @@ class CommandHandler:
                 self.current_document.method_call("change", "element_update", element_type, element_id, int(position))
         except Exception as e:
             self.client.send(pickle.dumps(f"a problem occurred while updating the element: {e}"))
-        else:
-            self.client.send(pickle.dumps("Element updated successfully"))
 
     def set_element_attribute(self, attr_name, attr_value):
         try:
@@ -208,8 +202,6 @@ class CommandHandler:
                 self.current_document.method_call("change", "element_attr", attr_name, attr_value)
         except Exception as e:
             self.client.send(pickle.dumps(f"a problem occurred while setting the element attribute: {e}"))
-        else:
-            self.client.send(pickle.dumps("Element attribute set successfully"))
 
     def delete_element(self, element_position=None):
         try:
@@ -222,8 +214,6 @@ class CommandHandler:
                     self.current_document.method_call("delete", "element_child_pos", int(element_position))
         except Exception as e:
             self.client.send(pickle.dumps(f"a problem occurred while deleting the element: {e}"))
-        else:
-            self.client.send(pickle.dumps("Element deleted successfully"))
 
     def get_element_xml(self):
         try:
