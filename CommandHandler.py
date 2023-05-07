@@ -59,7 +59,7 @@ class CommandHandler:
             "delete_element <element_position>": "deletes the child element at given position",
             "get_element_xml": "returns the xml of the selected element",
             "get_element_text": "returns the text of the selected element",
-            "get_element_path": "returns the path of the selected element",
+            "get_element_path": "returns the xml of the given element path",
             "help": "get information about command usage",
             "exit": "exit the program",
         }
