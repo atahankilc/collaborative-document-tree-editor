@@ -48,9 +48,11 @@ class CommandHandler:
             "set_document_name <new_name>": "sets the name of the open document to given name",
             "select_element <element_id>": "selects the element with given id",
             "insert_element <element_type> <element_id> <position>": "inserts a new element of given type and id at "
-                                                                     "given position",
+                                                                     "given position (to generate the new element "
+                                                                     "with a random id use 0)",
             "update_element <element_type> <element_id> <position>": "changes the element at given position to the "
-                                                                     "element of given type and id",
+                                                                     "element of given type and id (to generate the "
+                                                                     "new element with a random id use 0)",
             "set_element_attribute <attr_name> <attr_value>": "sets the attribute of the selected element to given "
                                                               "value",
             "delete_element": "deletes the selected element",
@@ -85,6 +87,9 @@ class CommandHandler:
     def open_document(self, doc_id):
         try:
             if self.current_document is not None:
+                if self.current_document.obj.get_id() == int(doc_id):
+                    self.client.send(pickle.dumps("Document is already open"))
+                    return
                 self.close_document()
             self.current_document = self.editor.open(int(doc_id), self.user)
         except KeyError:
