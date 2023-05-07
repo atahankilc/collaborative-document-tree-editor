@@ -1,3 +1,5 @@
+import os
+from lxml import etree
 from Decorators import update_users
 from ElementClass import Element
 from Enums import Occurs
@@ -88,9 +90,32 @@ class DocTree:
 
         del self.users[user]
 
-    # TODO
-    def export(self, exptype, filename):
-        pass
+    def export(self, exptype, directory, filename):
+        if exptype == "html":
+            html_root = etree.Element("html")
+            head = etree.SubElement(html_root, "head")
+            title = etree.SubElement(head, "title")
+            title.text = self.name
+            body = etree.SubElement(html_root, "body")
+
+            xml_str = self.root.getXML()
+            xml_element = etree.fromstring(xml_str.encode("utf-8"))
+            body.append(xml_element)
+
+            html_str = etree.tostring(html_root, pretty_print=True).decode("utf-8")
+
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+
+            if filename is None:
+                filename = self.name
+            filename = filename + ".html"
+            filepath = os.path.join(directory, filename)
+
+            with open(filepath, "w") as f:
+                f.write(html_str)
+        else:
+            raise Exception("export type is not supported")
 
     def search_element(self, id=None, path_array=None):
         """

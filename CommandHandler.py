@@ -23,6 +23,7 @@ class CommandHandler:
             "get_element_xml": self.get_element_xml,
             "get_element_text": self.get_element_text,
             "get_element_path": self.get_element_path,
+            "export": self.export,
         }
         self.editor = Editor()
         self.current_document = None
@@ -60,6 +61,8 @@ class CommandHandler:
             "get_element_xml": "returns the xml of the selected element",
             "get_element_text": "returns the text of the selected element",
             "get_element_path": "returns the xml of the given element path",
+            "export <export_type> <export_path> <file_name>": "exports the open document to given path with given "
+                                                              "name (supported export types: html)",
             "help": "get information about command usage",
             "exit": "exit the program",
         }
@@ -229,3 +232,14 @@ class CommandHandler:
                 self.client.send(pickle.dumps(response))
         except Exception as e:
             self.client.send(pickle.dumps(f"a problem occurred while getting the element path: {e}"))
+
+    def export(self, export_type, export_path, file_name=None):
+        try:
+            if self.current_document is None:
+                self.client.send(pickle.dumps("There is no open document"))
+            else:
+                self.current_document.method_call("export", export_type, export_path, file_name)
+        except Exception as e:
+            self.client.send(pickle.dumps(f"a problem occurred while exporting the document: {e}"))
+        else:
+            self.client.send(pickle.dumps(f"Document exported successfully to {export_path}"))

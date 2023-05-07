@@ -70,10 +70,9 @@ class Document:
             elif action == "element_child_pos":
                 self.doctree.getElementById(kwargs["selected_element_id"]).removeChild(child_pos)
 
-    # TODO
-    def export(self):
+    def export(self, export_format, export_path, file_name, **kwargs):
         with self.mutex:
-            self.doctree.export(None, None)
+            self.doctree.export(export_format, export_path, file_name)
 
     def add_user(self, **kwargs):
         with self.mutex:

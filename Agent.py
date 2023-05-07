@@ -74,7 +74,6 @@ class Agent(threading.Thread):
             else:
                 command_handler.handle_command(command)
 
-    # TODO
     def handle_notifications(self):
         while True:
             with self.user.mutex:
