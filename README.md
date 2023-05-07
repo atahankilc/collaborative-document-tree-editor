@@ -20,7 +20,7 @@ Enums.py: This file contains the implementations of the Status (used for authent
 Decorators.py: This file contains the implementations of the singleton, update_users and auth_required 
 decorators used in the project.
 
-demo.py: A demo for showing different functionalities of the project.
+(DEPRECATED) demo.py: A demo for showing different functionalities of the project.
 
 Server.py: This file contains the implementation of the server side of the project. It starts the server and 
 and listens for incoming connections. It creates an agent thread for each of the incoming connections.
