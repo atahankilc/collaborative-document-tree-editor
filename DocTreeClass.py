@@ -23,6 +23,7 @@ class DocTree:
         self.searched_element = None
         self.root = Element(templfile["root"], self, 0)
 
+    @update_users(function_name="setDocumentName")
     def setName(self, name):
         """
         Sets the name of the document tree

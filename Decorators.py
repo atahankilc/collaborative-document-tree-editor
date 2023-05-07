@@ -7,27 +7,28 @@ by calling the registered callback function with the appropriate action, argumen
 """
 
 
-# TODO: change update user decorator from calling callback to putting message to queue
 def update_users(function_name):
     def notify_users(func):
-        def notify(users, action, args, kwargs):
+        def notify(users, args, kwargs):
+            action = None
+            if function_name == "removeElement":
+                action = "Element deleted/removed"
+            elif function_name == "insertElement":
+                action = "Element inserted"
+            elif function_name == "updateElement":
+                action = "Element updated"
+            elif function_name == "setElementAttr":
+                action = "Element attribute changed"
+            elif function_name == "setDocumentName":
+                action = "Document name changed."
+            else:
+                action = "Undefined action"
             if len(users) > 0:
                 for user in users:
                     users[user](user, action=action, args=args, kwargs=kwargs)
 
         def execute(self, *args, **kwargs):
-            action = None
-            if function_name == "removeChild":
-                action = "Element deleted/removed"
-            elif function_name == "insertChild":
-                action = "Element inserted"
-            elif function_name == "updateChild":
-                action = "Element updated"
-            elif function_name == "setAttr":
-                action = "Element attribute changed"
-            else:
-                action = "Undefined action"
-            th = Thread(target=notify, args=(self.users, action, args, kwargs))
+            th = Thread(target=notify, args=(self.users, args, kwargs))
             th.start()
             ret = func(self, *args, **kwargs)
             th.join()

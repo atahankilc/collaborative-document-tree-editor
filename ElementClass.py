@@ -66,7 +66,7 @@ class Element:
         if self.template.hasTextualContent:
             return self.text
 
-    @update_users(function_name="insertChild")
+    @update_users(function_name="insertElement")
     def insertChild(self, element, pos):
         """
         Inserts a child element at the specified position.
@@ -96,7 +96,7 @@ class Element:
         element.parent = self
         self.children.insert(min(pos, len(self.children)), element)
 
-    @update_users(function_name="removeChild")
+    @update_users(function_name="removeElement")
     def removeChild(self, pos):
         """
         Removes the child element at the specified position.
@@ -125,7 +125,7 @@ class Element:
 
         return self.children.pop(pos)
 
-    @update_users(function_name="updateChild")
+    @update_users(function_name="updateElement")
     def updateChild(self, element, pos):
         """
         Replaces the child element at the specified position with the given element.
@@ -167,7 +167,7 @@ class Element:
 
         return old_child
 
-    @update_users(function_name="setAttr")
+    @update_users(function_name="setElementAttr")
     def setAttr(self, attr, value):
         """
         Sets the value of the attribute with the given name as a key value pair in the attrs dictionary.
