@@ -83,7 +83,9 @@ class Element:
 
         @note If the given position is greater than the number of children, the child element is inserted at the end.
         """
+        self._insert(element, pos)
 
+    def _insert(self, element, pos):
         if pos < 0:
             raise Exception("Position is not valid")
 
@@ -112,7 +114,9 @@ class Element:
         @note If the given position is not a valid position (larger than number of children or negative number),
         an exception is raised.
         """
+        return self._remove(pos)
 
+    def _remove(self, pos):
         if pos >= len(self.children) or pos < 0:
             raise Exception("Position is not valid")
 
@@ -155,14 +159,14 @@ class Element:
             self.children[pos] = element
         else:
             try:
-                self.removeChild(pos)
+                self._remove(pos)
             except Exception:
                 raise Exception("Child element cannot be updated")
             else:
                 try:
-                    self.insertChild(element, pos)
+                    self._insert(element, pos)
                 except Exception:
-                    self.insertChild(old_child, pos)
+                    self._insert(old_child, pos)
                     raise Exception("Child element cannot be updated")
 
         return old_child
