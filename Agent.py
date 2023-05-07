@@ -69,10 +69,17 @@ class Agent(threading.Thread):
 
             if command == "exit":
                 self.exit_flag = True
+                self.user.cond.notify()
                 break
             else:
                 command_handler.handle_command(command)
 
     # TODO
     def handle_notifications(self):
-        pass
+        while True:
+            with self.user.mutex:
+                while (not self.user.threadContinueFlag) or (len(self.user.message_queue) == 0) or self.exit_flag:
+                    if self.exit_flag:
+                        return
+                    self.user.cond.wait()
+                self.conn.send(pickle.dumps(self.user.message_queue.pop(0)))
