@@ -42,3 +42,7 @@ library calls.
 
 Editor.py: This file contains the implementation of the Editor class. It is used for managing the document instances.
 New, open, close, delete, list commands are implemented in this class.
+
+requirements.txt: This file contains the required packages for the project. Currently, it contains only the lxml 
+package used for converting the xml string to HTML. "pip install -r requirements.txt" command can be used for 
+installing the required packages.
