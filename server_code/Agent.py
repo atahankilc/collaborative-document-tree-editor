@@ -66,9 +66,12 @@ class Agent(threading.Thread):
 
                     if self.user.status == Status.UNAUTHORIZED:
                         self.conn.send(pickle.dumps("Invalid username or password"))
+                    else:
+                        token = self.user.login()
+                        self.conn.send(pickle.dumps(f"token: {token}"))
 
-                self.conn.send(pickle.dumps(f"Welcome, {self.user.username}. You are now logged in.\nYou can write "
-                                            f"'help' to see the list of commands you can use.\n"))
+                # self.conn.send(pickle.dumps(f"Welcome, {self.user.username}. You are now logged in.\nYou can write "
+                #                             f"'help' to see the list of commands you can use.\n"))
 
                 self.request_handler_thread = threading.Thread(target=self.handle_requests)
                 self.request_handler_thread.start()

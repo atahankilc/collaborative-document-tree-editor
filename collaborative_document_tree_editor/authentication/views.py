@@ -23,11 +23,16 @@ class Login(View):
             if form.is_valid():
                 username = form.cleaned_data['username']
                 password = form.cleaned_data['password']
+                sock.sendall(pickle.dumps(f'{username} {password}'))
+                response = pickle.loads(sock.recv(1024))
 
-            sock.sendall(pickle.dumps(f'{username} {password}'))
-            response = pickle.loads(sock.recv(1024))
-
-            return HttpResponse(response)
+                if response.startswith('token:'):
+                    token = response.split()[1]
+                    response = HttpResponse("You are now logged in.")
+                    response.set_cookie('token', token)
+                    return response
+                else:
+                    return HttpResponse(response)
 
 
 class SignUp(View):
@@ -48,8 +53,13 @@ class SignUp(View):
                 email = form.cleaned_data['email']
                 fullname = form.cleaned_data['fullname']
                 password = form.cleaned_data['password']
+                sock.sendall(pickle.dumps(f'{username} {email} {fullname} {password}'))
+                response = pickle.loads(sock.recv(1024))
 
-            sock.sendall(pickle.dumps(f'{username} {email} {fullname} {password}'))
-            response = pickle.loads(sock.recv(1024))
-
-            return HttpResponse(response)
+                if response.startswith('token:'):
+                    token = response.split()[1]
+                    response = HttpResponse("You are now registered.")
+                    response.set_cookie('token', token)
+                    return response
+                else:
+                    return HttpResponse(response)
