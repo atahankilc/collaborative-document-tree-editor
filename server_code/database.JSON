@@ -1,0 +1,22 @@
+{
+    "users": [
+        {
+            "username": "user_1",
+            "email": "user_1@metu.edu.tr",
+            "fullname": "user 1",
+            "password": "123456_1"
+        },
+        {
+            "username": "user_2",
+            "email": "user_2@metu.edu.tr",
+            "fullname": "user 2",
+            "password": "123456_2"
+        },
+        {
+            "username": "user_3",
+            "email": "user_3@metu.edu.tr",
+            "fullname": "user 3",
+            "password": "123456_3"
+        }
+    ]
+}
