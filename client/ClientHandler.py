@@ -2,7 +2,7 @@ import sys
 
 sys.path.append("..")
 from comman_utils.Decorators import singleton
-from Client import Client
+from .Client import Client
 
 
 @singleton
