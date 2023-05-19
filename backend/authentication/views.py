@@ -71,4 +71,5 @@ class SignUp(View):
                     messages.success(request, 'You are now registered.')
                     return response
                 else:
-                    return HttpResponse(response)
+                    messages.error(request, response)
+                    return redirect('signup')

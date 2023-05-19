@@ -1,4 +1,5 @@
 <form method="post">
+    {% csrf_token %}
     {{ new_document.as_p }}
     <button type="submit">Create New Document</button>
 </form>

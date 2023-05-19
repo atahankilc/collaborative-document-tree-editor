@@ -1,4 +1,5 @@
 <form method="post">
+    {% csrf_token %}
     {{ open_document.as_p }}
     <button type="submit">Open Document</button>
 </form>
