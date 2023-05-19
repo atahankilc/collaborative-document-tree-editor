@@ -9,6 +9,8 @@ import sys
 
 sys.path.append("..")
 from client.ClientHandler import ClientHandler
+
+
 # ClientHandler.client_dict
 
 class Home(View):

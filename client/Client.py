@@ -12,6 +12,12 @@ class Client:
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.connect(("localhost", self.port))
         self.exit_flag = False
+        self.sending_queue = []
+        self.sending_mutex = threading.Lock()
+        self.sending_cond = threading.Condition(self.sending_mutex)
+        self.receiving_queue = []
+        self.receiving_mutex = threading.Lock()
+        self.receiving_cond = threading.Condition(self.receiving_mutex)
         self.receive_thread = threading.Thread(target=self.receive_loop)
         self.receive_thread.start()
         self.send_thread = threading.Thread(target=self.send_loop)
@@ -22,12 +28,19 @@ class Client:
 
     def send_loop(self):
         while True:
-            data = input()
+            with self.sending_mutex:
+                while len(self.sending_queue) == 0:
+                    self.sending_cond.wait()
+                data = self.sending_queue.pop()
             self.send(data)
-
             if data == "exit":
                 self.exit_flag = True
                 break
+
+    def add_to_sending_queue(self, data):
+        with self.sending_mutex:
+            self.sending_queue.append(data)
+            self.sending_cond.notifyAll()
 
     def receive(self):
         serialized_data = b''
@@ -44,11 +57,19 @@ class Client:
         while not self.exit_flag:
             try:
                 data = self.receive()
-                print(data)
+                with self.receiving_mutex:
+                    self.receiving_queue.append(data)
+                    self.receiving_cond.notifyAll()
             except EOFError:
                 break
 
         self.close()
+
+    def pop_from_receiving_queue(self):
+        with self.receiving_mutex:
+            if len(self.receiving_queue) == 0:
+                self.receiving_cond.wait()
+            return self.receiving_queue.pop()
 
     def close(self):
         self.sock.close()
