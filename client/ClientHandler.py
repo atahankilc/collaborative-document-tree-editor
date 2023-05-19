@@ -22,10 +22,10 @@ ClientHandler = ClientHandler()
 # -- for debugging --
 # ClientHandler.add_session(1)
 # while(True):
-#     print(ClientHandler.client_dict[1].pop_from_receiving_queue())
 #     data = input()
 #     ClientHandler.client_dict[1].add_to_sending_queue(data)
 #     if data == "exit":
 #         break
+#     print(ClientHandler.client_dict[1].pop_from_receiving_queue())
 # print(ClientHandler.client_dict)
 
