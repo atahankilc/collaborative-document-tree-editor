@@ -2,13 +2,17 @@ import pickle
 import socket
 
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
+from django.contrib import messages
 from .forms import LoginForm, SignUpForm
 
 
 class Login(View):
     def get(self, request):
+        if 'token' in request.COOKIES:
+            return redirect('home')
+
         form = LoginForm()
         return render(request, 'authentication/login.html', {'form': form})
 
@@ -28,15 +32,19 @@ class Login(View):
 
                 if response.startswith('token:'):
                     token = response.split()[1]
-                    response = HttpResponse("You are now logged in.")
+                    response = redirect('home')
                     response.set_cookie('token', token)
+                    messages.success(request, 'You are now logged in.')
                     return response
                 else:
-                    return HttpResponse(response)
-
+                    messages.error(request, response)
+                    return redirect('login')
 
 class SignUp(View):
     def get(self, request):
+        if 'token' in request.COOKIES:
+            return redirect('home')
+
         form = SignUpForm()
         return render(request, 'authentication/signup.html', {'form': form})
 
@@ -58,8 +66,9 @@ class SignUp(View):
 
                 if response.startswith('token:'):
                     token = response.split()[1]
-                    response = HttpResponse("You are now registered.")
+                    response = redirect('home')
                     response.set_cookie('token', token)
+                    messages.success(request, 'You are now registered.')
                     return response
                 else:
                     return HttpResponse(response)

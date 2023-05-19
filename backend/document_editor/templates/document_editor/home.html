@@ -5,4 +5,12 @@
 {% include "document_editor/includes/new_document.html" %}
 {% include "document_editor/includes/open_document.html" %}
 {% include "document_editor/includes/server_response.html" %}
+
+{% if messages %}
+    <script>
+      {% for message in messages %}
+        alert("{{ message }}");
+      {% endfor %}
+    </script>
+{% endif %}
 {% endblock %}
