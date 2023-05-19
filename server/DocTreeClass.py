@@ -1,8 +1,8 @@
 import os
 from lxml import etree
-from Decorators import update_users
+from comman_utils.Enums import Occurs
+from comman_utils.Decorators import update_users
 from ElementClass import Element
-from Enums import Occurs
 
 
 class DocTree:

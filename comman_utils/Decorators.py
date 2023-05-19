@@ -1,4 +1,4 @@
-from Enums import Status
+from .Enums import Status
 
 """
 This function iterates over all attached users of document tree and notifies them of the change 

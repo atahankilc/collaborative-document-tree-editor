@@ -1,9 +1,13 @@
-import threading
-import pickle
+import sys
+
+sys.path.append("..")
+
 import re
+import pickle
+import threading
+from comman_utils.Enums import *
 from UserClass import User
 from CommandHandler import CommandHandler
-from Enums import Status
 
 
 class Agent(threading.Thread):

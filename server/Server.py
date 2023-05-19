@@ -1,8 +1,8 @@
-from UserClass import User
-from Agent import Agent
-import socket
-import json
 import sys
+import json
+import socket
+from Agent import Agent
+from UserClass import User
 
 
 class Server:

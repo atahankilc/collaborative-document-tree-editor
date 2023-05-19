@@ -5,11 +5,15 @@ from django.urls import reverse
 from .forms.home import *
 from .forms.document import *
 
+import sys
+
+sys.path.append("..")
+from client.ClientHandler import ClientHandler
+# ClientHandler.client_dict
 
 class Home(View):
     @staticmethod
     def get(request):
-
         new_document = NewDocument()
         open_document = OpenDocument()
         return render(request, 'document_editor/home.html', {

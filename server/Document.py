@@ -1,7 +1,7 @@
+from uuid import uuid4
+from threading import *
 from DocTreeClass import DocTree
 from ElementClass import Element
-from threading import *
-from uuid import uuid4
 
 
 class DocumentInstancePerUser:

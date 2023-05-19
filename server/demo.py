@@ -1,6 +1,6 @@
+import UserClass
 import DocTreeClass
 import ElementClass
-import UserClass
 
 
 #################################

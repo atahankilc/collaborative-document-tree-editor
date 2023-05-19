@@ -1,6 +1,6 @@
-from Document import *
-from Decorators import singleton
 from threading import *
+from comman_utils.Decorators import singleton
+from Document import *
 
 
 @singleton

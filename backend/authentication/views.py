@@ -7,6 +7,12 @@ from django.views import View
 
 from .forms import LoginForm, SignUpForm
 
+import sys
+
+sys.path.append("..")
+from client.ClientHandler import ClientHandler
+# ClientHandler.client_dict
+
 
 class Login(View):
     @staticmethod

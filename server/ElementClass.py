@@ -1,6 +1,6 @@
 import uuid
-from Enums import Occurs
-from Decorators import update_users
+from comman_utils.Enums import Occurs
+from comman_utils.Decorators import update_users
 
 
 class Element:
