@@ -1,8 +1,6 @@
-from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect
 from django.views import View
-from django.urls import reverse
-from .forms.home import *
+from .forms.editor import *
 from .forms.document import *
 
 import sys
@@ -13,12 +11,15 @@ from client.ClientHandler import ClientHandler
 
 # ClientHandler.client_dict
 
-class Home(View):
+class Editor(View):
     @staticmethod
     def get(request):
+        if 'token' not in request.COOKIES:
+            return redirect('home')
+
         new_document = NewDocument()
         open_document = OpenDocument()
-        return render(request, 'document_editor/home.html', {
+        return render(request, 'document_editor/editor.html', {
             'new_document': new_document,
             'open_document': open_document,
         })
@@ -27,6 +28,9 @@ class Home(View):
 class Document(View):
     @staticmethod
     def get(request, document_id):
+        if 'token' not in request.COOKIES:
+            return redirect('home')
+
         server_response = f"<document>{document_id}</document>"
 
         select_element = SelectElementForm()
@@ -40,5 +44,4 @@ class InvalidPath(View):
 
     @staticmethod
     def get(request, invalid_path):
-        redirect_path = reverse("home")
-        return HttpResponseRedirect(redirect_path)
+        return redirect('editor')

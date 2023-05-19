@@ -4,6 +4,7 @@ import socket
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.views import View
+from django.http import HttpResponse
 
 from .forms import LoginForm, SignUpForm
 
@@ -86,3 +87,10 @@ class SignUp(View):
                 else:
                     messages.error(request, response)
                     return redirect('signup')
+
+
+# TODO
+class Logout(View):
+    @staticmethod
+    def get(request):
+        return HttpResponse("TODO")

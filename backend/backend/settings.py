@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     'authentication',
     'document_editor',
+    'home'
 ]
 
 MIDDLEWARE = [
