@@ -1,22 +1,24 @@
 import pickle
 import socket
 
-from django.http import HttpResponse
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.views import View
-from django.contrib import messages
+
 from .forms import LoginForm, SignUpForm
 
 
 class Login(View):
-    def get(self, request):
+    @staticmethod
+    def get(request):
         if 'token' in request.COOKIES:
             return redirect('home')
 
         form = LoginForm()
         return render(request, 'authentication/login.html', {'form': form})
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.connect(('localhost', 50001))
             pickle.loads(sock.recv(1024))
@@ -40,15 +42,18 @@ class Login(View):
                     messages.error(request, response)
                     return redirect('login')
 
+
 class SignUp(View):
-    def get(self, request):
+    @staticmethod
+    def get(request):
         if 'token' in request.COOKIES:
             return redirect('home')
 
         form = SignUpForm()
         return render(request, 'authentication/signup.html', {'form': form})
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.connect(('localhost', 50001))
             pickle.loads(sock.recv(1024))
