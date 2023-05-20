@@ -27,5 +27,7 @@ ClientHandler = ClientHandler()
 #     if data == "exit":
 #         break
 #     print(ClientHandler.client_dict[1].pop_from_receiving_queue())
+#     if data == "logout":
+#         print(ClientHandler.client_dict[1].pop_from_receiving_queue())
 # print(ClientHandler.client_dict)
 
