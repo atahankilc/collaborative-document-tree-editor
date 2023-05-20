@@ -30,15 +30,12 @@ class Login(View):
     def post(request):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.connect(('localhost', 50001))
-            pickle.loads(sock.recv(1024))
-            sock.sendall(pickle.dumps('login'))
-            pickle.loads(sock.recv(1024))
 
             form = LoginForm(request.POST)
             if form.is_valid():
                 username = form.cleaned_data['username']
                 password = form.cleaned_data['password']
-                sock.sendall(pickle.dumps(f'{username} {password}'))
+                sock.sendall(pickle.dumps(f'login {username} {password}'))
                 response = pickle.loads(sock.recv(1024))
 
                 if response.startswith('token:'):
@@ -65,9 +62,6 @@ class SignUp(View):
     def post(request):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.connect(('localhost', 50001))
-            pickle.loads(sock.recv(1024))
-            sock.sendall(pickle.dumps('register'))
-            pickle.loads(sock.recv(1024))
 
             form = SignUpForm(request.POST)
             if form.is_valid():
@@ -75,7 +69,7 @@ class SignUp(View):
                 email = form.cleaned_data['email']
                 fullname = form.cleaned_data['fullname']
                 password = form.cleaned_data['password']
-                sock.sendall(pickle.dumps(f'{username} {email} {fullname} {password}'))
+                sock.sendall(pickle.dumps(f'signup {username} {email} {fullname} {password}'))
                 response = pickle.loads(sock.recv(1024))
 
                 if response.startswith('token:'):
