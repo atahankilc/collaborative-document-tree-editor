@@ -10,6 +10,8 @@ from client.ClientHandler import ClientHandler
 class Home(View):
     @staticmethod
     def get(request):
+        if not request.session.exists(request.session.session_key):
+            request.session.create()
         session_key = request.session.session_key
         if session_key not in ClientHandler.client_dict:
             ClientHandler.add_session(session_key)
