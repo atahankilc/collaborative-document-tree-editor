@@ -44,10 +44,16 @@ class Editor(View):
             if open_document.is_valid():
                 document_id = open_document.cleaned_data['open_document']
                 client.add_to_sending_queue(f"open_document {document_id}")
-                messages.success(request, client.pop_from_receiving_queue())
-                response = redirect('document', document_id=document_id)
-                response.set_cookie('documentid', document_id)
-                return response
+                response = client.pop_from_receiving_queue()
+                if response == 'Document opened successfully':
+                    messages.success(request, response)
+                    response = redirect('document', document_id=document_id)
+                    response.set_cookie('documentid', document_id)
+                    return response
+                else:
+                    messages.error(request, response)
+                    return redirect('editor')
+
         else:
             return redirect('editor')
 
@@ -64,9 +70,11 @@ class Document(View):
 
         set_document_name = SetDocumentName()
         select_element = SelectElement()
+        insert_element = InsertElement()
         return render(request, 'document_editor/document.html', {
             'set_document_name': set_document_name,
             'select_element': select_element,
+            'insert_element': insert_element,
             'server_response': server_response
         })
 
@@ -90,6 +98,17 @@ class Document(View):
                 messages.success(request, client.pop_from_receiving_queue())
                 response = redirect('document', document_id=document_id)
                 return response
+        elif 'insert_element' in request.POST:
+            inserted_element = InsertElement(request.POST)
+            if inserted_element.is_valid():
+                element_type = inserted_element.cleaned_data['element_type']
+                element_position = inserted_element.cleaned_data['position']
+                element_id = inserted_element.cleaned_data['element_id']
+
+                client.add_to_sending_queue(f"insert_element {element_type} {element_position} {element_id}")
+                messages.success(request, client.pop_from_receiving_queue())
+                response = redirect('document', document_id=document_id)
+                return response
         elif 'close_document' in request.POST:
             client.add_to_sending_queue(f"close_document")
             messages.success(request, client.pop_from_receiving_queue())
@@ -97,4 +116,5 @@ class Document(View):
             response.delete_cookie("documentid")
             return response
         else:
+            print("no match", request.POST)
             return redirect('document', document_id)
