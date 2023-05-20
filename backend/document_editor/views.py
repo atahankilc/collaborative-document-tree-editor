@@ -14,7 +14,7 @@ from client.ClientHandler import ClientHandler
 class Editor(View):
     @staticmethod
     def get(request):
-        if 'token' not in request.COOKIES:
+        if ('token' not in request.COOKIES) or (not request.session.exists(request.session.session_key)):
             return redirect('home')
 
         new_document = NewDocument()
@@ -49,7 +49,7 @@ class Editor(View):
 class Document(View):
     @staticmethod
     def get(request, document_id):
-        if 'token' not in request.COOKIES:
+        if ('token' not in request.COOKIES) or (not request.session.exists(request.session.session_key)):
             return redirect('home')
 
         server_response = f"<document>{document_id}</document>"

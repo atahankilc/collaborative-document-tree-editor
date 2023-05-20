@@ -13,6 +13,9 @@ class ClientHandler:
     def add_session(self, session_id):
         self.client_dict[session_id] = Client(50001)
 
+    def get_session(self, session_id):
+        return self.client_dict[session_id]
+
     def remove_session(self, session_id):
         del self.client_dict[session_id]
 
@@ -30,4 +33,3 @@ ClientHandler = ClientHandler()
 #     if data == "logout":
 #         print(ClientHandler.client_dict[1].pop_from_receiving_queue())
 # print(ClientHandler.client_dict)
-

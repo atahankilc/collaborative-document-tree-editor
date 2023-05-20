@@ -15,6 +15,7 @@ class Home(View):
         session_key = request.session.session_key
         if session_key not in ClientHandler.client_dict:
             ClientHandler.add_session(session_key)
+        print(ClientHandler.client_dict)
         context = {}
         if 'token' in request.COOKIES:
             context['token'] = request.COOKIES['token']
