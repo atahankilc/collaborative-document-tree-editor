@@ -62,8 +62,10 @@ class Document(View):
         client.add_to_sending_queue(f'get_element_xml')
         server_response = client.pop_from_receiving_queue()
 
+        set_document_name = SetDocumentName()
         select_element = SelectElement()
         return render(request, 'document_editor/document.html', {
+            'set_document_name': set_document_name,
             'select_element': select_element,
             'server_response': server_response
         })
@@ -72,7 +74,15 @@ class Document(View):
     def post(request, document_id):
         client = ClientHandler.get_session(request.session.session_key)
 
-        if 'select_element' in request.POST:
+        if 'set_document_name' in request.POST:
+            set_document_name = SetDocumentName(request.POST)
+            if set_document_name.is_valid():
+                document_name = set_document_name.cleaned_data['set_document_name']
+                client.add_to_sending_queue(f"set_document_name {document_name}")
+                messages.success(request, client.pop_from_receiving_queue())
+                response = redirect('document', document_id=document_id)
+                return response
+        elif 'select_element' in request.POST:
             selected_element = SelectElement(request.POST)
             if selected_element.is_valid():
                 selected_element = selected_element.cleaned_data['select_element']
