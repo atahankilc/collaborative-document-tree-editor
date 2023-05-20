@@ -24,7 +24,7 @@ class CommandHandler:
             "get_element_text": self.get_element_text,
             "get_element_path": self.get_element_path,
             "export": self.export,
-            "exit": self.exit
+            "logout": self.logout
         }
         self.commandArgCount = {
             "help": (0, 0),
@@ -44,7 +44,7 @@ class CommandHandler:
             "get_element_text": (0, 0),
             "get_element_path": (0, 0),
             "export": (2, 3),
-            "exit": (0, 0)
+            "logout": (0, 0)
         }
         self.editor = Editor()
         self.current_document = None
@@ -86,7 +86,7 @@ class CommandHandler:
             "export <export_type> <export_path> <file_name>": "exports the open document to given path with given "
                                                               "name (supported export types: html)",
             "help": "get information about command usage",
-            "exit": "exit the program",
+            "logout": "logout the user",
         }
 
         for command, description in help_dict.items():
@@ -256,6 +256,6 @@ class CommandHandler:
         else:
             self.client.send(pickle.dumps(f"Document exported successfully to {export_path}"))
 
-    def exit(self):
+    def logout(self):
         if self.current_document is not None:
             self.close_document()

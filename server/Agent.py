@@ -20,38 +20,49 @@ class Agent(threading.Thread):
         self.address = address
         self.server = server
         self.user = None
+        self.logout_flag = False
         self.exit_flag = False
         self.request_handler_thread = None
         self.notification_handler_thread = None
 
     def run(self):
         with self.conn:
-            try:
-                while self.user is None or self.user.status == Status.UNAUTHORIZED:
-                    response = pickle.loads(self.receive()).strip().split()
-                    if response[0] == "login":
-                        self.login(response)
-                    elif response[0] == "signup":
-                        self.signup(response)
+            while True:
+                try:
+                    while self.user is None or self.user.status == Status.UNAUTHORIZED:
+                        response = pickle.loads(self.receive()).strip().split()
+                        if response[0] == "login":
+                            self.login(response)
+                        elif response[0] == "signup":
+                            self.signup(response)
+                        elif response[0] == "exit":
+                            self.exit_flag = True
+                            break
 
-                    if self.user is None:
-                        continue
-                    elif self.user.status == Status.UNAUTHORIZED:
-                        self.conn.send(pickle.dumps("Invalid username or password"))
-                    else:
-                        token = self.user.login()
-                        self.conn.send(pickle.dumps(f"token: {token}"))
+                        if self.user is None:
+                            continue
+                        elif self.user.status == Status.UNAUTHORIZED:
+                            self.conn.send(pickle.dumps("Invalid username or password"))
+                        else:
+                            token = self.user.login()
+                            self.conn.send(pickle.dumps(f"token: {token}"))
 
-                self.request_handler_thread = threading.Thread(target=self.handle_requests)
-                self.request_handler_thread.start()
+                    if self.exit_flag:
+                        break
 
-                self.notification_handler_thread = threading.Thread(target=self.handle_notifications)
-                self.notification_handler_thread.start()
+                    self.request_handler_thread = threading.Thread(target=self.handle_requests)
+                    self.request_handler_thread.start()
 
-                self.request_handler_thread.join()
-                self.notification_handler_thread.join()
-            except Exception as e:
-                print(f"Exception: {e}")
+                    self.notification_handler_thread = threading.Thread(target=self.handle_notifications)
+                    self.notification_handler_thread.start()
+
+                    self.request_handler_thread.join()
+                    self.notification_handler_thread.join()
+
+                    self.logout()
+
+                except Exception as e:
+                    print(f"Exception: {e}")
 
     def login(self, response):
         username, passwd = response[1], response[2]
@@ -74,6 +85,12 @@ class Agent(threading.Thread):
             self.user.auth(passwd)
             self.server.add_new_user(self.user, passwd)
 
+    def logout(self):
+        self.user.logout()
+        self.user = None
+        self.logout_flag = False
+        self.conn.send(pickle.dumps("User logout successfully"))
+
     def receive(self):
         serialized_data = b''
         while True:
@@ -92,8 +109,8 @@ class Agent(threading.Thread):
             command = pickle.loads(self.receive()).strip()
             command_handler.handle_command(command)
 
-            if command == "exit":
-                self.exit_flag = True
+            if command == "logout":
+                self.logout_flag = True
                 with self.user.mutex:
                     self.user.cond.notify()
                 break
@@ -101,8 +118,8 @@ class Agent(threading.Thread):
     def handle_notifications(self):
         while True:
             with self.user.mutex:
-                while (not self.user.threadContinueFlag) or (len(self.user.message_queue) == 0) or self.exit_flag:
-                    if self.exit_flag:
+                while self.logout_flag or (not self.user.threadContinueFlag) or (len(self.user.message_queue) == 0):
+                    if self.logout_flag:
                         return
                     self.user.cond.wait()
                 self.conn.send(pickle.dumps(self.user.message_queue.pop(0)))
