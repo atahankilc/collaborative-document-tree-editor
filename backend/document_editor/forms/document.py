@@ -39,3 +39,11 @@ class SetElementAttribute(forms.Form):
 class DeleteElement(forms.Form):
     element_position = forms.IntegerField()
     element_position.label = "Element Position"
+
+
+class ExportDocument(forms.Form):
+    export_format = forms.ChoiceField(choices=[('html', 'HTML')])
+    export_path = forms.CharField()
+    export_path.label = "Export Path"
+    doc_name = forms.CharField()
+    doc_name.label = "Document Name"

@@ -73,6 +73,7 @@ class Document(View):
         update_element = UpdateElement()
         set_element_attribute = SetElementAttribute()
         delete_element = DeleteElement()
+        export_document = ExportDocument()
         return render(request, 'document_editor/document.html', {
             'set_document_name': set_document_name,
             'select_element': select_element,
@@ -80,6 +81,7 @@ class Document(View):
             'update_element': update_element,
             'set_element_attribute': set_element_attribute,
             'delete_element': delete_element,
+            'export_document': export_document,
             'server_response': server_response
         })
 
@@ -146,6 +148,16 @@ class Document(View):
             response = redirect('editor')
             response.delete_cookie("documentid")
             return response
+        elif 'export_document' in request.POST:
+            export_document = ExportDocument(request.POST)
+            if export_document.is_valid():
+                export_format = export_document.cleaned_data['export_format']
+                export_path = export_document.cleaned_data['export_path']
+                doc_name = export_document.cleaned_data['doc_name']
+                client.add_to_sending_queue(f"export {export_format} {export_path} {doc_name}")
+                messages.success(request, client.pop_from_receiving_queue())
+                response = redirect('document', document_id=document_id)
+                return response
         else:
             print("no match", request.POST)
             return redirect('document', document_id)
