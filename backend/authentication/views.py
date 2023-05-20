@@ -82,7 +82,7 @@ class SignUp(View):
 class Logout(View):
     @staticmethod
     def get(request):
-        if ('token' in request.COOKIES) or (not request.session.exists(request.session.session_key)):
+        if ('token' not in request.COOKIES) or (not request.session.exists(request.session.session_key)):
             return redirect('home')
 
         session_key = request.session.session_key
