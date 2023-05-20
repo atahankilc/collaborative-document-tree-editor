@@ -1,5 +1,6 @@
-<form method="post">
+<form method="post" style="border-style: solid; margin: 2px 2px 2px 2px; padding: 2px 2px 2px 2px">
     {% csrf_token %}
+    <label>Insert Element</label>
     {{ insert_element.as_p }}
     <button type="submit" name="insert_element">Submit</button>
 </form>

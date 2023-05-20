@@ -1,10 +1,12 @@
 {% extends "./base.html" %}
 
 {% block content %}
+{% include "document_editor/includes/close_document.html" %}
 {% include "document_editor/includes/set_document_name.html" %}
 {% include "document_editor/includes/select_element.html" %}
 {% include "document_editor/includes/insert_element.html" %}
-{% include "document_editor/includes/close_document.html" %}
+{% include "document_editor/includes/update_element.html" %}
+{% include "document_editor/includes/delete_element.html" %}
 <h2>Document Structure</h2>
 {% include "document_editor/includes/server_response.html" %}
 {% endblock %}

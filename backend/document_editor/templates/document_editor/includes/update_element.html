@@ -1,6 +1,6 @@
 <form method="post" style="border-style: solid; margin: 2px 2px 2px 2px; padding: 2px 2px 2px 2px">
     {% csrf_token %}
-    <label>New Document</label>
-    {{ new_document.as_p }}
-    <button type="submit">Create New Document</button>
+    <label>Update Element</label>
+    {{ update_element.as_p }}
+    <button type="submit" name="update_element">Submit</button>
 </form>

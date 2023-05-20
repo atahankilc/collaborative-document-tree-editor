@@ -1,5 +1,6 @@
-<form method="post">
+<form method="post" style="border-style: solid; margin: 2px 2px 2px 2px; padding: 2px 2px 2px 2px">
     {% csrf_token %}
+    <label>Set Document Name</label>
     {{ set_document_name.as_p }}
     <button type="submit">Submit</button>
 </form>

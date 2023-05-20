@@ -71,10 +71,14 @@ class Document(View):
         set_document_name = SetDocumentName()
         select_element = SelectElement()
         insert_element = InsertElement()
+        update_element = UpdateElement()
+        delete_element = DeleteElement()
         return render(request, 'document_editor/document.html', {
             'set_document_name': set_document_name,
             'select_element': select_element,
             'insert_element': insert_element,
+            'update_element': update_element,
+            'delete_element': delete_element,
             'server_response': server_response
         })
 
@@ -102,10 +106,27 @@ class Document(View):
             inserted_element = InsertElement(request.POST)
             if inserted_element.is_valid():
                 element_type = inserted_element.cleaned_data['element_type']
-                element_position = inserted_element.cleaned_data['position']
+                element_position = inserted_element.cleaned_data['element_position']
                 element_id = inserted_element.cleaned_data['element_id']
-
                 client.add_to_sending_queue(f"insert_element {element_type} {element_position} {element_id}")
+                messages.success(request, client.pop_from_receiving_queue())
+                response = redirect('document', document_id=document_id)
+                return response
+        elif 'update_element' in request.POST:
+            update_element = UpdateElement(request.POST)
+            if update_element.is_valid():
+                element_type = update_element.cleaned_data['element_type']
+                element_position = update_element.cleaned_data['element_position']
+                element_id = update_element.cleaned_data['element_id']
+                client.add_to_sending_queue(f"update_element {element_type} {element_position} {element_id}")
+                messages.success(request, client.pop_from_receiving_queue())
+                response = redirect('document', document_id=document_id)
+                return response
+        elif 'delete_element' in request.POST:
+            deleted_element = DeleteElement(request.POST)
+            if deleted_element.is_valid():
+                element_position = deleted_element.cleaned_data['element_position']
+                client.add_to_sending_queue(f"delete_element {element_position}")
                 messages.success(request, client.pop_from_receiving_queue())
                 response = redirect('document', document_id=document_id)
                 return response
