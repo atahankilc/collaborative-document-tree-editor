@@ -1,6 +1,6 @@
 from django import forms
 
 
-class SelectElementForm(forms.Form):
-    selected_element = forms.CharField()
-    selected_element.label = "Select Element With Id"
+class SelectElement(forms.Form):
+    select_element = forms.CharField()
+    select_element.label = "Select Element With Id"

@@ -26,8 +26,7 @@ class Login(View):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
 
-            session_key = request.session.session_key
-            client = ClientHandler.get_session(session_key)
+            client = ClientHandler.get_session(request.session.session_key)
             client.add_to_sending_queue(f'login {username} {password}')
             response = client.pop_from_receiving_queue()
 
@@ -60,8 +59,7 @@ class SignUp(View):
             fullname = form.cleaned_data['fullname']
             password = form.cleaned_data['password']
 
-            session_key = request.session.session_key
-            client = ClientHandler.get_session(session_key)
+            client = ClientHandler.get_session(request.session.session_key)
             client.add_to_sending_queue(f'signup {username} {email} {fullname} {password}')
             response = client.pop_from_receiving_queue()
 
@@ -82,8 +80,7 @@ class Logout(View):
         if ('token' not in request.COOKIES) or (not request.session.exists(request.session.session_key)):
             return redirect('home')
 
-        session_key = request.session.session_key
-        client = ClientHandler.get_session(session_key)
+        client = ClientHandler.get_session(request.session.session_key)
         client.add_to_sending_queue(f'logout')
         messages.success(request, client.pop_from_receiving_queue())
         response = redirect('home')

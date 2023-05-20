@@ -1,6 +1,7 @@
 {% extends "./base.html" %}
 
 {% block content %}
+<button><a href="{% url 'home' %}">Navigate To Home</a></button>
 {% include "document_editor/includes/new_document.html" %}
 {% include "document_editor/includes/open_document.html" %}
 <h2>Document List</h2>
