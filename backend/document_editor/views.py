@@ -43,6 +43,12 @@ class Editor(View):
                 ClientHandler.client_dict[request.session.session_key].add_to_sending_queue(
                     f"open_document {document_id}")
                 return redirect('document', document_id=document_id)
+        elif 'list_documents' in request.POST:
+            ClientHandler.client_dict[request.session.session_key].add_to_sending_queue("list_documents")
+            return render(request, 'document_editor/editor.html', {
+                'server_response': ClientHandler.client_dict[
+                    request.session.session_key].pop_from_receiving_queue(),
+            })
         return redirect('editor')
 
 
