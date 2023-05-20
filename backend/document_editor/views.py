@@ -24,6 +24,27 @@ class Editor(View):
             'open_document': open_document,
         })
 
+    @staticmethod
+    def post(request):
+        if 'new_document' in request.POST:
+            new_document = NewDocument(request.POST)
+            if new_document.is_valid():
+                document_template = new_document.cleaned_data['new_document']
+                ClientHandler.client_dict[request.session.session_key].add_to_sending_queue(
+                    f"new_document {document_template}")
+                return render(request, 'document_editor/editor.html', {
+                    'server_response': ClientHandler.client_dict[
+                        request.session.session_key].pop_from_receiving_queue(),
+                })
+        elif 'open_document' in request.POST:
+            open_document = OpenDocument(request.POST)
+            if open_document.is_valid():
+                document_id = open_document.cleaned_data['document_id']
+                ClientHandler.client_dict[request.session.session_key].add_to_sending_queue(
+                    f"open_document {document_id}")
+                return redirect('document', document_id=document_id)
+        return redirect('editor')
+
 
 class Document(View):
     @staticmethod
@@ -38,10 +59,3 @@ class Document(View):
             'select_element': select_element,
             'server_response': server_response
         })
-
-
-class InvalidPath(View):
-
-    @staticmethod
-    def get(request, invalid_path):
-        return redirect('editor')
