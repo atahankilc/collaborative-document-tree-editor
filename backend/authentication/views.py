@@ -87,4 +87,14 @@ class SignUp(View):
 class Logout(View):
     @staticmethod
     def get(request):
-        return HttpResponse("TODO")
+        if ('token' in request.COOKIES) or (not request.session.exists(request.session.session_key)):
+            return redirect('home')
+
+        session_key = request.session.session_key
+        client = ClientHandler.get_session(session_key)
+        client.add_to_sending_queue(f'logout')
+        messages.success(request, client.pop_from_receiving_queue())
+        response = redirect('home')
+        response.delete_cookie("token")
+        return response
+
