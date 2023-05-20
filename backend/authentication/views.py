@@ -83,7 +83,6 @@ class SignUp(View):
                 return redirect('signup')
 
 
-# TODO
 class Logout(View):
     @staticmethod
     def get(request):
@@ -97,4 +96,3 @@ class Logout(View):
         response = redirect('home')
         response.delete_cookie("token")
         return response
-
