@@ -7,5 +7,5 @@ class NewDocument(forms.Form):
 
 
 class OpenDocument(forms.Form):
-    document_id = forms.CharField()
-    document_id.label = "Document Id"
+    open_document = forms.CharField()
+    open_document.label = "Document Id"

@@ -10,9 +10,6 @@ sys.path.append("..")
 from client.ClientHandler import ClientHandler
 
 
-# ClientHandler.client_dict
-
-
 class Login(View):
     @staticmethod
     def get(request):
