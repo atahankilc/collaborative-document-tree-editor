@@ -43,6 +43,7 @@ class DeleteElement(forms.Form):
 
 class ExportDocument(forms.Form):
     export_format = forms.ChoiceField(choices=[('html', 'HTML')])
+    export_format.label = "Export Format"
     export_path = forms.CharField()
     export_path.label = "Export Path"
     doc_name = forms.CharField()
