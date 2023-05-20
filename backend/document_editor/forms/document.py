@@ -29,6 +29,13 @@ class UpdateElement(forms.Form):
     element_id.label = "Element Id"
 
 
+class SetElementAttribute(forms.Form):
+    attr_name = forms.CharField()
+    attr_name.label = "Attribute Name"
+    attr_value = forms.IntegerField()
+    attr_value.label = "Attribute Value"
+
+
 class DeleteElement(forms.Form):
     element_position = forms.IntegerField()
     element_position.label = "Element Position"

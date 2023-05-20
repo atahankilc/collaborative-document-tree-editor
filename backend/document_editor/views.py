@@ -53,7 +53,6 @@ class Editor(View):
                 else:
                     messages.error(request, response)
                     return redirect('editor')
-
         else:
             return redirect('editor')
 
@@ -72,12 +71,14 @@ class Document(View):
         select_element = SelectElement()
         insert_element = InsertElement()
         update_element = UpdateElement()
+        set_element_attribute = SetElementAttribute()
         delete_element = DeleteElement()
         return render(request, 'document_editor/document.html', {
             'set_document_name': set_document_name,
             'select_element': select_element,
             'insert_element': insert_element,
             'update_element': update_element,
+            'set_element_attribute': set_element_attribute,
             'delete_element': delete_element,
             'server_response': server_response
         })
@@ -119,6 +120,15 @@ class Document(View):
                 element_position = update_element.cleaned_data['element_position']
                 element_id = update_element.cleaned_data['element_id']
                 client.add_to_sending_queue(f"update_element {element_type} {element_position} {element_id}")
+                messages.success(request, client.pop_from_receiving_queue())
+                response = redirect('document', document_id=document_id)
+                return response
+        elif 'set_element_attribute' in request.POST:
+            element_attribute = SetElementAttribute(request.POST)
+            if element_attribute.is_valid():
+                attr_name = element_attribute.cleaned_data['attr_name']
+                attr_value = element_attribute.cleaned_data['attr_value']
+                client.add_to_sending_queue(f"set_element_attribute {attr_name} {attr_value}")
                 messages.success(request, client.pop_from_receiving_queue())
                 response = redirect('document', document_id=document_id)
                 return response

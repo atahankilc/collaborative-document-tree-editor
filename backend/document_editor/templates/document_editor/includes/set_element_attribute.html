@@ -1,0 +1,6 @@
+<form method="post" style="border-style: solid; margin: 2px 2px 2px 2px; padding: 2px 2px 2px 2px">
+    {% csrf_token %}
+    <label>Set Element Attribute</label>
+    {{ set_element_attribute.as_p }}
+    <button type="submit" name="set_element_attribute">Submit</button>
+</form>
