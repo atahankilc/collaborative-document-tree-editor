@@ -20,7 +20,7 @@ class Server:
 
     def add_new_user(self, user, plainpass):
         self.user_dict[user.username] = user
-        with open("database.json", "r") as f:
+        with open("database.JSON", "r") as f:
             data = json.load(f)
             data["users"].append({
                 "username": user.username,
@@ -29,7 +29,7 @@ class Server:
                 "password": plainpass
             })
 
-        with open("database.json", "w") as f:
+        with open("database.JSON", "w") as f:
             json.dump(data, f, indent=4)
 
     def start(self):
