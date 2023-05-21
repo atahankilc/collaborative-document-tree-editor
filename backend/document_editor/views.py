@@ -15,6 +15,8 @@ class Editor(View):
     def get(request):
         if ('token' not in request.COOKIES) or (not request.session.exists(request.session.session_key)):
             return redirect('home')
+        elif 'documentid' in request.COOKIES:
+            return redirect('document', document_id=request.COOKIES['documentid'])
 
         client = ClientHandler.get_session(request.session.session_key)
         client.add_to_sending_queue(f'list_documents')

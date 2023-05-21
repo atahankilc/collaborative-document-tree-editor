@@ -13,7 +13,9 @@ from client.ClientHandler import ClientHandler
 class Login(View):
     @staticmethod
     def get(request):
-        if ('token' in request.COOKIES) or (not request.session.exists(request.session.session_key)):
+        if ('token' in request.COOKIES) or \
+                ('documentid' in request.COOKIES) or \
+                (request.session.session_key not in ClientHandler.client_dict):
             return redirect('home')
 
         form = LoginForm()
@@ -44,7 +46,9 @@ class Login(View):
 class SignUp(View):
     @staticmethod
     def get(request):
-        if ('token' in request.COOKIES) or (not request.session.exists(request.session.session_key)):
+        if ('token' in request.COOKIES) or \
+                ('documentid' in request.COOKIES) or \
+                (request.session.session_key not in ClientHandler.client_dict):
             return redirect('home')
 
         form = SignUpForm()
@@ -77,7 +81,9 @@ class SignUp(View):
 class Logout(View):
     @staticmethod
     def get(request):
-        if ('token' not in request.COOKIES) or (not request.session.exists(request.session.session_key)):
+        if ('token' not in request.COOKIES) or \
+                ('documentid' in request.COOKIES) or \
+                (request.session.session_key not in ClientHandler.client_dict):
             return redirect('home')
 
         client = ClientHandler.get_session(request.session.session_key)
