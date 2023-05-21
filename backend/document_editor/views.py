@@ -13,10 +13,10 @@ from client.ClientHandler import ClientHandler
 class Editor(View):
     @staticmethod
     def get(request):
-        if ('token' not in request.COOKIES) or (not request.session.exists(request.session.session_key)):
+        if ('token' not in request.COOKIES) or \
+                ('documentid' in request.COOKIES) or \
+                (request.session.session_key not in ClientHandler.client_dict):
             return redirect('home')
-        elif 'documentid' in request.COOKIES:
-            return redirect('document', document_id=request.COOKIES['documentid'])
 
         client = ClientHandler.get_session(request.session.session_key)
         client.add_to_sending_queue(f'list_documents')
@@ -62,12 +62,21 @@ class Editor(View):
 class Document(View):
     @staticmethod
     def get(request, document_id):
-        if ('token' not in request.COOKIES) or (not request.session.exists(request.session.session_key)):
+        if ('token' not in request.COOKIES) or \
+                ('documentid' not in request.COOKIES) or \
+                (request.session.session_key not in ClientHandler.client_dict):
             return redirect('home')
 
         client = ClientHandler.get_session(request.session.session_key)
         client.add_to_sending_queue(f'get_element_xml')
-        server_response = client.pop_from_receiving_queue()
+        server_message = ''
+        server_response = ''
+        while (True):
+            message = client.pop_from_receiving_queue()
+            if message.startswith('<'):
+                server_response = message
+                break
+            server_message += message + '\n'
 
         set_document_name = SetDocumentName()
         select_element = SelectElement()
@@ -84,6 +93,7 @@ class Document(View):
             'set_element_attribute': set_element_attribute,
             'delete_element': delete_element,
             'export_document': export_document,
+            'server_message': server_message,
             'server_response': server_response
         })
 
@@ -96,7 +106,6 @@ class Document(View):
             if set_document_name.is_valid():
                 document_name = set_document_name.cleaned_data['set_document_name']
                 client.add_to_sending_queue(f"set_document_name {document_name}")
-                messages.success(request, client.pop_from_receiving_queue())
                 response = redirect('document', document_id=document_id)
                 return response
         elif 'select_element' in request.POST:
@@ -104,7 +113,6 @@ class Document(View):
             if selected_element.is_valid():
                 selected_element = selected_element.cleaned_data['select_element']
                 client.add_to_sending_queue(f"select_element {selected_element}")
-                messages.success(request, client.pop_from_receiving_queue())
                 response = redirect('document', document_id=document_id)
                 return response
         elif 'insert_element' in request.POST:
@@ -114,7 +122,6 @@ class Document(View):
                 element_position = inserted_element.cleaned_data['element_position']
                 element_id = inserted_element.cleaned_data['element_id']
                 client.add_to_sending_queue(f"insert_element {element_type} {element_position} {element_id}")
-                messages.success(request, client.pop_from_receiving_queue())
                 response = redirect('document', document_id=document_id)
                 return response
         elif 'update_element' in request.POST:
@@ -124,7 +131,6 @@ class Document(View):
                 element_position = update_element.cleaned_data['element_position']
                 element_id = update_element.cleaned_data['element_id']
                 client.add_to_sending_queue(f"update_element {element_type} {element_position} {element_id}")
-                messages.success(request, client.pop_from_receiving_queue())
                 response = redirect('document', document_id=document_id)
                 return response
         elif 'set_element_attribute' in request.POST:
@@ -133,7 +139,6 @@ class Document(View):
                 attr_name = element_attribute.cleaned_data['attr_name']
                 attr_value = element_attribute.cleaned_data['attr_value']
                 client.add_to_sending_queue(f"set_element_attribute {attr_name} {attr_value}")
-                messages.success(request, client.pop_from_receiving_queue())
                 response = redirect('document', document_id=document_id)
                 return response
         elif 'delete_element' in request.POST:
@@ -141,15 +146,8 @@ class Document(View):
             if deleted_element.is_valid():
                 element_position = deleted_element.cleaned_data['element_position']
                 client.add_to_sending_queue(f"delete_element {element_position}")
-                messages.success(request, client.pop_from_receiving_queue())
                 response = redirect('document', document_id=document_id)
                 return response
-        elif 'close_document' in request.POST:
-            client.add_to_sending_queue(f"close_document")
-            messages.success(request, client.pop_from_receiving_queue())
-            response = redirect('editor')
-            response.delete_cookie("documentid")
-            return response
         elif 'export_document' in request.POST:
             export_document = ExportDocument(request.POST)
             if export_document.is_valid():
@@ -157,9 +155,18 @@ class Document(View):
                 export_path = export_document.cleaned_data['export_path']
                 doc_name = export_document.cleaned_data['doc_name']
                 client.add_to_sending_queue(f"export {export_format} {export_path} {doc_name}")
-                messages.success(request, client.pop_from_receiving_queue())
                 response = redirect('document', document_id=document_id)
                 return response
+        elif 'close_document' in request.POST:
+            client.add_to_sending_queue(f"close_document")
+            while (True):
+                message = client.pop_from_receiving_queue()
+                if message == 'Document closed successfully':
+                    break
+            messages.success(request, message)
+            response = redirect('editor')
+            response.delete_cookie("documentid")
+            return response
         else:
             print("no match", request.POST)
             return redirect('document', document_id)

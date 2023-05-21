@@ -1,9 +1,23 @@
 {% extends "./base.html" %}
 
 {% block content %}
-<button><a href="{% url 'home' %}">Navigate To Home</a></button>
-{% include "document_editor/includes/new_document.html" %}
-{% include "document_editor/includes/open_document.html" %}
+<div style="border-style: solid; margin: 2px 2px 2px 2px; padding: 2px 2px 2px 2px">
+    <button>
+        <a href="{% url 'home' %}">Navigate To Home</a>
+    </button>
+</div>
+<form method="post" style="border-style: solid; margin: 2px 2px 2px 2px; padding: 2px 2px 2px 2px">
+    {% csrf_token %}
+    <label>New Document</label>
+    {{ new_document.as_p }}
+    <button type="submit">Create New Document</button>
+</form>
+<form method="post" style="border-style: solid; margin: 2px 2px 2px 2px; padding: 2px 2px 2px 2px">
+    {% csrf_token %}
+    <label>Open Document</label>
+    {{ open_document.as_p }}
+    <button type="submit">Open Document</button>
+</form>
 <h2>Document List</h2>
 {% include "document_editor/includes/server_response.html" %}
 {% endblock %}
