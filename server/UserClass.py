@@ -38,7 +38,7 @@ class User:
         self.message_queue = []
         self.mutex = Lock()
         self.cond = Condition(self.mutex)
-        self.threadContinueFlag = True
+        self.notification_handler_thread_flag = True
 
     # CRUD operations
     def get(self):
@@ -156,10 +156,10 @@ class User:
         return self.status
 
     def _callback(self, **message):
-        self.threadContinueFlag = False
+        self.notification_handler_thread_flag = False
         with self.mutex:
             self.message_queue.append(
                 "{}. args = {}, kwargs = {}, ret = {}".format(message["action"], message["args"], message["kwargs"],
                                                               message["ret"]))
-            self.threadContinueFlag = True
+            self.notification_handler_thread_flag = True
             self.cond.notifyAll()

@@ -52,7 +52,7 @@ def auth_required(func):
             ret = func(self, *arg, **kw)
             return ret
         else:
-            return "UNAUTHORIZED USER: ACTION DENIED"
+            return "INVALID"
 
     return is_authorized
 

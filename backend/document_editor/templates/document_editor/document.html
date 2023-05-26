@@ -1,54 +1,57 @@
 {% extends "./base.html" %}
 
 {% block content %}
-<form method="post" style="border-style: solid; margin: 2px 2px 2px 2px; padding: 2px 2px 2px 2px">
-    {% csrf_token %}
-    <label>Close Document</label>
-    <button type="submit" name="close_document">Close Document</button>
-</form>
-<form method="post" style="border-style: solid; margin: 2px 2px 2px 2px; padding: 2px 2px 2px 2px">
-    {% csrf_token %}
-    <label>Set Document Name</label>
-    {{ set_document_name.as_p }}
-    <button type="submit">Submit</button>
-</form>
-<form method="post" style="border-style: solid; margin: 2px 2px 2px 2px; padding: 2px 2px 2px 2px">
-    {% csrf_token %}
-    <label>Select Element</label>
-    {{ select_element.as_p }}
-    <button type="submit">Submit</button>
-</form>
-<form method="post" style="border-style: solid; margin: 2px 2px 2px 2px; padding: 2px 2px 2px 2px">
-    {% csrf_token %}
-    <label>Insert Element</label>
-    {{ insert_element.as_p }}
-    <button type="submit" name="insert_element">Submit</button>
-</form>
-<form method="post" style="border-style: solid; margin: 2px 2px 2px 2px; padding: 2px 2px 2px 2px">
-    {% csrf_token %}
-    <label>Update Element</label>
-    {{ update_element.as_p }}
-    <button type="submit" name="update_element">Submit</button>
-</form>
-<form method="post" style="border-style: solid; margin: 2px 2px 2px 2px; padding: 2px 2px 2px 2px">
-    {% csrf_token %}
-    <label>Set Element Attribute</label>
-    {{ set_element_attribute.as_p }}
-    <button type="submit" name="set_element_attribute">Submit</button>
-</form>
-<form method="post" style="border-style: solid; margin: 2px 2px 2px 2px; padding: 2px 2px 2px 2px">
-    {% csrf_token %}
-    <label>Delete Element</label>
-    {{ delete_element.as_p }}
-    <button type="submit" name="delete_element">Submit</button>
-</form>
-<form method="post" style="border-style: solid; margin: 2px 2px 2px 2px; padding: 2px 2px 2px 2px">
-    {% csrf_token %}
-    <label>Export Document</label>
-    {{ export_document.as_p }}
-    <button type="submit" name="export_document">Export</button>
-</form>
-{% include "document_editor/includes/server_message.html" %}
-<h2>Document Structure</h2>
-{% include "document_editor/includes/server_response.html" %}
+<div style="width: 30%; float:left">
+    <form method="post" style="border-style: solid; margin: 2px 2px 2px 2px; padding: 2px 2px 2px 2px">
+        {% csrf_token %}
+        <label>Close Document</label>
+        <button type="submit" name="close_document">Close Document</button>
+    </form>
+    <form method="post" style="border-style: solid; margin: 2px 2px 2px 2px; padding: 2px 2px 2px 2px">
+        {% csrf_token %}
+        <label>Set Document Name</label>
+        {{ set_document_name.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+    <form method="post" style="border-style: solid; margin: 2px 2px 2px 2px; padding: 2px 2px 2px 2px">
+        {% csrf_token %}
+        <label>Select Element</label>
+        {{ select_element.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+    <form method="post" style="border-style: solid; margin: 2px 2px 2px 2px; padding: 2px 2px 2px 2px">
+        {% csrf_token %}
+        <label>Insert Element</label>
+        {{ insert_element.as_p }}
+        <button type="submit" name="insert_element">Submit</button>
+    </form>
+    <form method="post" style="border-style: solid; margin: 2px 2px 2px 2px; padding: 2px 2px 2px 2px">
+        {% csrf_token %}
+        <label>Update Element</label>
+        {{ update_element.as_p }}
+        <button type="submit" name="update_element">Submit</button>
+    </form>
+    <form method="post" style="border-style: solid; margin: 2px 2px 2px 2px; padding: 2px 2px 2px 2px">
+        {% csrf_token %}
+        <label>Set Element Attribute</label>
+        {{ set_element_attribute.as_p }}
+        <button type="submit" name="set_element_attribute">Submit</button>
+    </form>
+    <form method="post" style="border-style: solid; margin: 2px 2px 2px 2px; padding: 2px 2px 2px 2px">
+        {% csrf_token %}
+        <label>Delete Element</label>
+        {{ delete_element.as_p }}
+        <button type="submit" name="delete_element">Submit</button>
+    </form>
+    <form method="post" style="border-style: solid; margin: 2px 2px 2px 2px; padding: 2px 2px 2px 2px">
+        {% csrf_token %}
+        <label>Export Document</label>
+        {{ export_document.as_p }}
+        <button type="submit" name="export_document">Export</button>
+    </form>
+</div>
+<div style="width: 68%; height: 100%; float:right; border-style: solid; margin: 2px 2px 2px 2px; padding: 2px 2px 2px 2px">
+    <h2>Server Response & Document Structure</h2>
+    {% include "document_editor/includes/server_response.html" %}
+</div>
 {% endblock %}

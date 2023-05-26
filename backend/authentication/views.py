@@ -28,9 +28,9 @@ class Login(View):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
 
-            client = ClientHandler.get_session(request.session.session_key)
-            client.add_to_sending_queue(f'login {username} {password}')
-            response = client.pop_from_receiving_queue()
+            command = f'login {username} {password}'
+            ClientHandler.send_to_session(request.session.session_key, command)
+            response = ClientHandler.receive_from_session(request.session.session_key, '')
 
             if response.startswith('token:'):
                 token = response.split()[1]
@@ -63,9 +63,9 @@ class SignUp(View):
             fullname = form.cleaned_data['fullname']
             password = form.cleaned_data['password']
 
-            client = ClientHandler.get_session(request.session.session_key)
-            client.add_to_sending_queue(f'signup {username} {email} {fullname} {password}')
-            response = client.pop_from_receiving_queue()
+            command = f'signup {username} {email} {fullname} {password}'
+            ClientHandler.send_to_session(request.session.session_key, command)
+            response = ClientHandler.receive_from_session(request.session.session_key, '')
 
             if response.startswith('token:'):
                 token = response.split()[1]
@@ -86,9 +86,10 @@ class Logout(View):
                 (request.session.session_key not in ClientHandler.client_dict):
             return redirect('home')
 
-        client = ClientHandler.get_session(request.session.session_key)
-        client.add_to_sending_queue(f'logout')
-        messages.success(request, client.pop_from_receiving_queue())
+        ClientHandler.send_to_session(request.session.session_key, 'logout', request.COOKIES["token"])
+        response = ClientHandler.receive_from_session(request.session.session_key, '')
+
+        messages.success(request, response)
         response = redirect('home')
         response.delete_cookie("token")
         return response

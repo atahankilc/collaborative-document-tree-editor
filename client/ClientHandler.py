@@ -10,14 +10,39 @@ class ClientHandler:
     def __init__(self):
         self.client_dict = {}
 
-    def add_session(self, session_id):
-        self.client_dict[session_id] = Client(50001)
+    @staticmethod
+    def add_session(session_id):
+        ClientHandler.client_dict[session_id] = Client(50001)
 
-    def get_session(self, session_id):
-        return self.client_dict[session_id]
+    @staticmethod
+    def get_session(session_id):
+        return ClientHandler.client_dict[session_id]
 
-    def remove_session(self, session_id):
-        del self.client_dict[session_id]
+    @staticmethod
+    def remove_session(session_id):
+        del ClientHandler.client_dict[session_id]
+
+    @staticmethod
+    def send_to_session(session_id, command, token=''):
+        ClientHandler.client_dict[session_id].add_to_sending_queue(f'{token} {command}')
+
+    @staticmethod
+    def receive_from_session(session_id, ending_condition):
+        message_block = ''
+        while True:
+            message = f'{ClientHandler.client_dict[session_id].pop_from_receiving_queue()}'
+            if message == '%INVALID_TOKEN%':
+                ClientHandler.terminate_session(session_id)
+                return "Invalid Token"
+            message_block += message
+            if message.startswith(ending_condition):
+                return message_block
+            message_block += '\n'
+
+    @staticmethod
+    def terminate_session(session_id):
+        del ClientHandler.client_dict[session_id]
+        ClientHandler.add_session(session_id)
 
 
 ClientHandler = ClientHandler()
