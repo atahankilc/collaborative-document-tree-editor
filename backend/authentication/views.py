@@ -76,6 +76,8 @@ class SignUp(View):
             else:
                 messages.error(request, response)
                 return redirect('signup')
+        messages.error(request, 'Invalid Form')
+        return redirect('signup')
 
 
 class Logout(View):

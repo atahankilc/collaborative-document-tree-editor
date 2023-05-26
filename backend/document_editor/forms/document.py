@@ -32,7 +32,7 @@ class UpdateElement(forms.Form):
 class SetElementAttribute(forms.Form):
     attr_name = forms.CharField()
     attr_name.label = "Attribute Name"
-    attr_value = forms.IntegerField()
+    attr_value = forms.CharField()
     attr_value.label = "Attribute Value"
 
 
