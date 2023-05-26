@@ -22,6 +22,12 @@ class Editor(View):
         ClientHandler.send_to_session(request.session.session_key, command, request.COOKIES["token"])
         server_response = ClientHandler.receive_from_session(request.session.session_key, '')
 
+        if server_response == "Invalid Token":
+            messages.success(request, server_response)
+            response = redirect('home')
+            response.delete_cookie("token")
+            return response
+
         new_document = NewDocument()
         open_document = OpenDocument()
         return render(request, 'document_editor/editor.html', {
