@@ -12,7 +12,7 @@ class Ws {
         var socket = new WebSocket('ws://' + this.ip_port);
 
         socket.onopen = function() {
-            console.log('Connected');
+            console.log('Connected!!!');
         }
 
         socket.onerror = function() {
@@ -30,7 +30,10 @@ class Ws {
 
         socket.onmessage = function wseventhandler (event) {
             var messages = event.data;
+            let notification = document.getElementById("notification")
+            console.log(notification)
             console.log(messages);
+            notification.innerHTML = messages
         }
         this.socket = socket
     }

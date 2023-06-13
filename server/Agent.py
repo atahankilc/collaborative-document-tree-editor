@@ -5,6 +5,8 @@ sys.path.append("..")
 import pickle
 import threading
 from CommandHandler import CommandHandler
+import asyncio
+from websockets.server import serve
 
 
 class Agent(threading.Thread):
@@ -23,6 +25,8 @@ class Agent(threading.Thread):
         self.notification_handler_thread_created = False
         self.notification_handler_thread_kill = False
         self.notification_handler_thread = None
+
+        self.CLIENTS = set()
 
     def run(self):
         with self.conn:
@@ -54,21 +58,51 @@ class Agent(threading.Thread):
                 command = self.receive().split()
             command_handler.handle_command(command)
 
+    async def relay(self, queue, websocket):
+        while True:
+            # Implement custom logic based on queue.qsize() and
+            # websocket.transport.get_write_buffer_size() here.
+            message = await queue.get()
+            await websocket.send(message)
+
+    async def client_handler(self, websocket):
+        queue = asyncio.Queue()
+        relay_task = asyncio.create_task(self.relay(queue, websocket))
+        self.CLIENTS.add(queue)
+        try:
+            await websocket.wait_closed()
+        finally:
+            self.CLIENTS.remove(queue)
+            relay_task.cancel()
+
+    def notification_sender(self):
+        with self.user.mutex:
+            while self.notification_handler_thread_kill or \
+                    self.user is None or \
+                    (not self.user.notification_handler_thread_flag) or \
+                    (len(self.user.message_queue) == 0):
+                if self.notification_handler_thread_kill or \
+                        self.user is None:
+                    self.notification_handler_thread_created = False
+                    return "%EXIT%"
+                self.user.cond.wait()
+            return self.user.message_queue.pop(0)
+
+    async def notification_main(self):
+        async with serve(self.client_handler, "localhost", 5678):
+            while True:
+                print("waiting")
+                message = await asyncio.get_event_loop().run_in_executor(None, lambda: self.notification_sender())
+                print(message)
+                if message == "%EXIT%":
+                    break
+                for queue in self.CLIENTS:
+                    queue.put_nowait(message)
+
     def handle_notifications(self):
         print("notification started")
-        while True:
-            with self.user.mutex:
-                while self.notification_handler_thread_kill or \
-                        self.user is None or \
-                        (not self.user.notification_handler_thread_flag) or \
-                        (len(self.user.message_queue) == 0):
-                    if self.notification_handler_thread_kill or \
-                            self.user is None:
-                        self.notification_handler_thread_created = False
-                        print("notification ended")
-                        return
-                    self.user.cond.wait()
-                self.send(self.user.message_queue.pop(0))
+        asyncio.run(self.notification_main())
+        print("notification ended")
 
     def start_notification(self):
         self.notification_handler_thread = threading.Thread(target=self.handle_notifications)
