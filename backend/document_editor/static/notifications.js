@@ -39,6 +39,9 @@ class Ws {
     }
 }
 
-window.onload = function () {
-  ws = new Ws('localhost:5678');
+window.onload = async function () {
+    const response = await fetch('http://localhost:8000/service/ws_port/')
+    const data = await response.json()
+    console.log(data)
+    ws = new Ws(`localhost:${data['ws_port']}`);
 }

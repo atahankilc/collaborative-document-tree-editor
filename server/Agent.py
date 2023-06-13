@@ -27,6 +27,7 @@ class Agent(threading.Thread):
         self.notification_handler_thread = None
 
         self.CLIENTS = set()
+        self.ws_port = None
 
     def run(self):
         with self.conn:
@@ -56,6 +57,9 @@ class Agent(threading.Thread):
                     break
             else:
                 command = self.receive().split()
+            if command[0] == "%WS_PORT%":
+                self.send(str(self.ws_port))
+                continue
             command_handler.handle_command(command)
 
     async def relay(self, queue, websocket):
@@ -89,7 +93,9 @@ class Agent(threading.Thread):
             return self.user.message_queue.pop(0)
 
     async def notification_main(self):
-        async with serve(self.client_handler, "localhost", 5678):
+        async with serve(self.client_handler, "localhost", None) as ws:
+            print(ws.sockets[0].getsockname()[1])
+            self.ws_port = ws.sockets[0].getsockname()[1]
             while True:
                 print("waiting")
                 message = await asyncio.get_event_loop().run_in_executor(None, lambda: self.notification_sender())
