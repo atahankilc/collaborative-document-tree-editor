@@ -28,6 +28,7 @@ class Agent(threading.Thread):
 
         self.CLIENTS = set()
         self.ws_port = None
+        self.ws_token = None
 
     def run(self):
         with self.conn:
@@ -47,6 +48,7 @@ class Agent(threading.Thread):
             if self.user is not None:
                 message = self.receive().split()
                 token = message[0]
+                self.ws_token = token
                 command = message[1:]
                 is_session_valid = self.user.checksession(token)
                 if is_session_valid == "Invalid":
@@ -90,6 +92,8 @@ class Agent(threading.Thread):
                     self.notification_handler_thread_created = False
                     return "%EXIT%"
                 self.user.cond.wait()
+            if self.user.checksession(self.ws_token) == "Invalid":
+                return "%EXIT%"
             return self.user.message_queue.pop(0)
 
     async def notification_main(self):
