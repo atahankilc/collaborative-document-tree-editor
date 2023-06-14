@@ -134,6 +134,8 @@ class Document(View):
                 element_type = inserted_element.cleaned_data['element_type']
                 element_position = inserted_element.cleaned_data['element_position']
                 element_id = inserted_element.cleaned_data['element_id']
+                if not element_id:
+                    element_id = ''
                 command = f'insert_element {element_type} {element_position} {element_id}'
                 ClientHandler.send_to_session(request.session.session_key, command, request.COOKIES["token"])
                 response = redirect('document', document_id=document_id)
@@ -144,6 +146,8 @@ class Document(View):
                 element_type = update_element.cleaned_data['element_type']
                 element_position = update_element.cleaned_data['element_position']
                 element_id = update_element.cleaned_data['element_id']
+                if not element_id:
+                    element_id = ''
                 command = f'update_element {element_type} {element_position} {element_id}'
                 ClientHandler.send_to_session(request.session.session_key, command, request.COOKIES["token"])
                 response = redirect('document', document_id=document_id)

@@ -16,8 +16,8 @@ class InsertElement(forms.Form):
     element_type.label = "Element Type"
     element_position = forms.IntegerField()
     element_position.label = "Element Position"
-    element_id = forms.IntegerField()
-    element_id.label = "Element Id"
+    element_id = forms.IntegerField(required=False, validators=[])
+    element_id.label = "Element Id (optional)"
 
 
 class UpdateElement(forms.Form):
@@ -25,8 +25,8 @@ class UpdateElement(forms.Form):
     element_type.label = "Element Type"
     element_position = forms.IntegerField()
     element_position.label = "Element Position"
-    element_id = forms.IntegerField()
-    element_id.label = "Element Id"
+    element_id = forms.IntegerField(required=False, validators=[])
+    element_id.label = "Element Id (optional)"
 
 
 class SetElementAttribute(forms.Form):
