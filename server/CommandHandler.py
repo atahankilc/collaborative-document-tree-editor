@@ -71,7 +71,7 @@ class CommandHandler:
         help_dict = {
             "login": "login",
             "signup": "signup",
-            "logout": "logput",
+            "logout": "logout",
             "new_document <doctree_template>": "creates a new document from given template",
             "list_documents": "lists all documents",
             "open_document <document_id>": "opens the document with given id",
@@ -122,6 +122,7 @@ class CommandHandler:
         elif not re.fullmatch(self.EMAIL_REGEX, email):
             self.agent.send("Please enter a valid email address")
         else:
+            fullname = fullname.replace("_", " ")
             self.agent.user = User(username, email, fullname, passwd)
             self.agent.user.auth(passwd)
             token = self.agent.user.login()

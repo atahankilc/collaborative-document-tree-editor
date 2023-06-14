@@ -61,6 +61,7 @@ class SignUp(View):
             username = form.cleaned_data['username']
             email = form.cleaned_data['email']
             fullname = form.cleaned_data['fullname']
+            fullname = fullname.replace(' ', '_')
             password = form.cleaned_data['password']
 
             command = f'signup {username} {email} {fullname} {password}'
