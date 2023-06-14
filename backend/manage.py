@@ -3,6 +3,9 @@
 import os
 import sys
 
+sys.path.append("..")
+from client.ClientHandler import ClientHandler
+
 
 def main():
     """Run administrative tasks."""
@@ -11,7 +14,7 @@ def main():
     if len(sys.argv) > 2 and sys.argv[2] == "--port":
         try:
             port = sys.argv[3]
-            os.environ['PORT'] = port
+            ClientHandler.set_port(int(port))
         except ValueError:
             print("Invalid port number")
     else:

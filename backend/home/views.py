@@ -16,8 +16,7 @@ class Home(View):
             request.session.create()
         session_key = request.session.session_key
         if session_key not in ClientHandler.client_dict:
-            port = int(os.environ['PORT'])
-            ClientHandler.add_session(session_key, port)
+            ClientHandler.add_session(session_key)
             print(ClientHandler.client_dict)
             response = render(request, 'home/base.html', {})
             response.delete_cookie('token')
