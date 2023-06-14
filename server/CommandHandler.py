@@ -43,7 +43,7 @@ class CommandHandler:
             "close_document": (0, 0),
             "get_current_document_id": (0, 0),
             "delete_document": (1, 1),
-            "set_document_name": (1, 1),
+            "set_document_name": (1, 10),
             "select_element": (1, 1),
             "insert_element": (2, 3),
             "update_element": (2, 3),
@@ -198,11 +198,12 @@ class CommandHandler:
         else:
             self.agent.send("Document deleted successfully")
 
-    def set_document_name(self, document_name):
+    def set_document_name(self, *document_name_args):
         try:
             if self.current_document is None:
                 self.agent.send("There is no open document")
             else:
+                document_name = " ".join(document_name_args)
                 self.current_document.method_call("change", "document_name", document_name)
         except Exception as e:
             self.agent.send(f"a problem occurred while setting the document name: {e}")
