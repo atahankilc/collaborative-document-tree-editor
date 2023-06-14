@@ -97,6 +97,7 @@ class Document(View):
         insert_element = InsertElement()
         update_element = UpdateElement()
         set_element_attribute = SetElementAttribute()
+        set_element_text = SetElementText()
         delete_element = DeleteElement()
         export_document = ExportDocument()
         return render(request, 'document_editor/document.html', {
@@ -105,6 +106,7 @@ class Document(View):
             'insert_element': insert_element,
             'update_element': update_element,
             'set_element_attribute': set_element_attribute,
+            'set_element_text': set_element_text,
             'delete_element': delete_element,
             'export_document': export_document,
             'server_response': server_response
@@ -158,6 +160,14 @@ class Document(View):
                 attr_name = element_attribute.cleaned_data['attr_name']
                 attr_value = element_attribute.cleaned_data['attr_value']
                 command = f'set_element_attribute {attr_name} {attr_value}'
+                ClientHandler.send_to_session(request.session.session_key, command, request.COOKIES["token"])
+                response = redirect('document', document_id=document_id)
+                return response
+        elif 'set_element_text' in request.POST:
+            element_text = SetElementText(request.POST)
+            if element_text.is_valid():
+                text = element_text.cleaned_data['text']
+                command = f'set_element_text {text}'
                 ClientHandler.send_to_session(request.session.session_key, command, request.COOKIES["token"])
                 response = redirect('document', document_id=document_id)
                 return response

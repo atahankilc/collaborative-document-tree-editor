@@ -28,6 +28,7 @@ class CommandHandler:
             "delete_element": self.delete_element,
             "get_element_xml": self.get_element_xml,
             "get_element_text": self.get_element_text,
+            "set_element_text": self.set_element_text,
             "get_element_path": self.get_element_path,
             "export": self.export
         }
@@ -36,7 +37,7 @@ class CommandHandler:
             "login": (2, 2),
             "signup": (4, 4),
             "logout": (0, 0),
-            "new_document": (1, 1),
+            "new_document": (1, 100),
             "list_documents": (0, 0),
             "open_document": (1, 1),
             "close_document": (0, 0),
@@ -50,6 +51,7 @@ class CommandHandler:
             "delete_element": (0, 1),
             "get_element_xml": (0, 0),
             "get_element_text": (0, 0),
+            "set_element_text": (1, 1000),
             "get_element_path": (0, 0),
             "export": (2, 3)
         }
@@ -278,6 +280,17 @@ class CommandHandler:
                 self.agent.send(response)
         except Exception as e:
             self.agent.send(f"a problem occurred while getting the element text: {e}")
+
+    def set_element_text(self, *text_args):
+        try:
+            if self.current_document is None:
+                self.agent.send("There is no open document")
+            else:
+                text = " ".join(text_args)
+                self.current_document.method_call("change", "element_text", text)
+        except Exception as e:
+            self.agent.send(f"a problem occurred while getting the element text: {e}")
+
 
     def get_element_path(self, path):
         try:

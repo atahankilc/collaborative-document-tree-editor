@@ -3,7 +3,7 @@ from django import forms
 
 class NewDocument(forms.Form):
     new_document = forms.CharField()
-    new_document.label = "Document Template File"
+    new_document.label = "Document Template"
 
 
 class OpenDocument(forms.Form):

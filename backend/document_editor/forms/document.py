@@ -36,6 +36,11 @@ class SetElementAttribute(forms.Form):
     attr_value.label = "Attribute Value"
 
 
+class SetElementText(forms.Form):
+    text = forms.CharField()
+    text.label = "Text"
+
+
 class DeleteElement(forms.Form):
     element_position = forms.IntegerField()
     element_position.label = "Element Position"

@@ -66,6 +66,13 @@ class Element:
         if self.template.hasTextualContent:
             return self.text
 
+    @update_users(function_name="setText")
+    def setText(self, text):
+        if self.template.hasTextualContent:
+            self.text = text
+        else:
+            raise Exception("Textual content is not allowed")
+
     @update_users(function_name="insertElement")
     def insertChild(self, element, pos):
         """

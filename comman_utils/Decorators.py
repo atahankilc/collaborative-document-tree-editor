@@ -18,6 +18,8 @@ def update_users(function_name):
                 action = "Element updated"
             elif function_name == "setElementAttr":
                 action = "Element attribute changed"
+            elif function_name == "setText":
+                action = "Element text changed"
             elif function_name == "setDocumentName":
                 action = "Document name changed"
             else:

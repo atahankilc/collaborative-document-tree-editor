@@ -62,6 +62,8 @@ class Document:
                 self.doctree.getElementById(kwargs["selected_element_id"]).updateChild(new_element, method_args[2])
             elif action == "element_attr":
                 self.doctree.getElementById(kwargs["selected_element_id"]).setAttr(method_args[0], method_args[1])
+            elif action == "element_text":
+                self.doctree.getElementById(kwargs["selected_element_id"]).setText(method_args[0])
 
     def delete(self, action, child_pos=None, **kwargs):
         with self.mutex:
