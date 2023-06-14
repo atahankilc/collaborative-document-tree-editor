@@ -14,3 +14,12 @@ class WsPort(View):
             ClientHandler.send_to_session(request.COOKIES['sessionid'], '%WS_PORT%', request.COOKIES['token'])
             ws_port = ClientHandler.receive_from_session(request.COOKIES['sessionid'], '')
             return JsonResponse({'ws_port': ws_port})
+
+
+class DocumentXML(View):
+    @staticmethod
+    def get(request):
+        if 'documentid' in request.COOKIES:
+            ClientHandler.send_to_session(request.COOKIES['sessionid'], 'get_element_xml', request.COOKIES['token'])
+            server_response = ClientHandler.receive_from_session(request.COOKIES['sessionid'], '<')
+            return JsonResponse({'server_response': server_response})

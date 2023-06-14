@@ -12,7 +12,7 @@ class Ws {
         var socket = new WebSocket('ws://' + this.ip_port);
 
         socket.onopen = function() {
-            console.log('Connected!!!');
+            console.log('Connected');
         }
 
         socket.onerror = function() {
@@ -28,12 +28,12 @@ class Ws {
                 } }, 5000);
         }
 
-        socket.onmessage = function wseventhandler (event) {
+        socket.onmessage = async function wseventhandler (event) {
             var messages = event.data;
-            let notification = document.getElementById("notification")
-            console.log(notification)
-            console.log(messages);
-            notification.innerHTML = messages
+            document.getElementById("notification").innerHTML = messages
+            const response = await fetch('http://localhost:8000/service/document_xml/')
+            const data = await response.json()
+            document.getElementById("server_response").innerHTML = data.server_response
         }
         this.socket = socket
     }
