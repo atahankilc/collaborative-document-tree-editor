@@ -121,6 +121,7 @@ class User:
         """
         self.status = Status.LOGGED_IN
         self.token = uuid.UUID(bytes=os.urandom(16), version=4).hex
+        UserHandler.add_user(self)
         return self.token
 
     # TODO
@@ -159,7 +160,7 @@ class User:
         self.notification_handler_thread_flag = False
         with self.mutex:
             self.message_queue.append(
-                "{} - {}. args = {}, kwargs = {}, ret = {}".format(self.username, message["action"], message["args"], message["kwargs"],
+                "{}. args = {}, kwargs = {}, ret = {}".format(message["action"], message["args"], message["kwargs"],
                                                               message["ret"]))
             self.notification_handler_thread_flag = True
             self.cond.notifyAll()
