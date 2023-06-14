@@ -11,11 +11,13 @@ class ClientHandler:
         self.client_dict = {}
         self.port = None
 
-    def set_port(self, port):
-        self.port = port
+    @staticmethod
+    def set_port(port):
+        ClientHandler.port = port
 
-    def add_session(self, session_id):
-        ClientHandler.client_dict[session_id] = Client(self.port)
+    @staticmethod
+    def add_session(session_id):
+        ClientHandler.client_dict[session_id] = Client(ClientHandler.port)
 
     @staticmethod
     def get_session(session_id):
@@ -42,7 +44,8 @@ class ClientHandler:
                 return message_block
             message_block += '\n'
 
-    def terminate_session(self, session_id):
+    @staticmethod
+    def terminate_session(session_id):
         del ClientHandler.client_dict[session_id]
         ClientHandler.add_session(session_id)
 

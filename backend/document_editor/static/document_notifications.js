@@ -40,6 +40,7 @@ class Ws {
 }
 
 window.onload = async function () {
+    await new Promise(r => setTimeout(r, 500));
     const response = await fetch('http://localhost:8000/service/ws_port/')
     const data = await response.json()
     console.log(data)
