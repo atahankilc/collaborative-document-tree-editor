@@ -121,7 +121,6 @@ class User:
         """
         self.status = Status.LOGGED_IN
         self.token = uuid.UUID(bytes=os.urandom(16), version=4).hex
-        UserHandler.add_user(self)
         return self.token
 
     # TODO
