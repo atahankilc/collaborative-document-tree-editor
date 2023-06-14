@@ -107,6 +107,7 @@ class CommandHandler:
             self.agent.user.auth(passwd)
 
             if self.agent.user.status == Status.UNAUTHORIZED:
+                self.agent.user = None
                 self.agent.send("Invalid username or password")
             else:
                 token = self.agent.user.login()
