@@ -6,6 +6,8 @@ from threading import Lock, Condition
 from comman_utils.Decorators import auth_required
 from comman_utils.Enums import Status
 
+from comman_utils.Decorators import UserHandler
+
 
 class User:
     def __init__(self, username, email, fullname, passwd):
@@ -147,6 +149,7 @@ class User:
 
         self.status = Status.LOGGED_OUT
         self.token = None
+        UserHandler.remove_user(self)
 
     # debugging
     def getstatus(self):

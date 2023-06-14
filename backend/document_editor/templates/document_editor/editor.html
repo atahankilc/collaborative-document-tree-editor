@@ -1,6 +1,9 @@
 {% extends "./base.html" %}
 
 {% block content %}
+{% load static %}
+<script src="{% static 'editor_notification.js' %}"></script>
+
 <div style="border-style: solid; margin: 2px 2px 2px 2px; padding: 2px 2px 2px 2px">
     <button>
         <a href="{% url 'home' %}">Navigate To Home</a>
@@ -19,5 +22,6 @@
     <button type="submit">Open Document</button>
 </form>
 <h2>Document List</h2>
+<p id="notification"></p>
 {% include "document_editor/includes/server_response.html" %}
 {% endblock %}

@@ -8,6 +8,14 @@ by calling the registered callback function with the appropriate action, argumen
 
 def update_users(function_name):
     def notify_users(func):
+
+        def notify_everyone(users, action, args, kwargs, ret):
+            if len(UserHandler.user_dict) > 0:
+                for key in UserHandler.user_dict:
+                    print(key)
+                    if UserHandler.user_dict[key] not in users:
+                        UserHandler.user_dict[key].callback(UserHandler.user_dict[key], action=action, args=args, kwargs=kwargs, ret=ret)
+
         def notify(users, args, kwargs, ret):
             action = None
             if function_name == "removeElement":
@@ -22,6 +30,10 @@ def update_users(function_name):
                 action = "Element text changed"
             elif function_name == "setDocumentName":
                 action = "Document name changed"
+                notify_everyone(users, action, args, kwargs, ret)
+            elif function_name == "newDocument":
+                action = "New Document Created"
+                notify_everyone(users, action, args, kwargs, ret)
             else:
                 action = "Undefined action"
             if len(users) > 0:
@@ -68,3 +80,20 @@ def singleton(cls):
         return instances[cls]
 
     return get_instance
+
+
+@singleton
+class UserHandler:
+    def __init__(self):
+        self.user_dict = {}
+
+    @staticmethod
+    def add_user(user):
+        UserHandler.user_dict[user.username] = user
+
+    @staticmethod
+    def remove_user(user):
+        del UserHandler.user_dict[user.username]
+
+
+UserHandler = UserHandler()

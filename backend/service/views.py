@@ -23,3 +23,12 @@ class DocumentXML(View):
             ClientHandler.send_to_session(request.COOKIES['sessionid'], 'get_element_xml', request.COOKIES['token'])
             server_response = ClientHandler.receive_from_session(request.COOKIES['sessionid'], '<')
             return JsonResponse({'server_response': server_response})
+
+
+class DocumentList(View):
+    @staticmethod
+    def get(request):
+        if 'sessionid' in request.COOKIES and 'token' in request.COOKIES:
+            ClientHandler.send_to_session(request.COOKIES['sessionid'], 'list_documents', request.COOKIES['token'])
+            server_response = ClientHandler.receive_from_session(request.COOKIES['sessionid'], '')
+            return JsonResponse({'server_response': server_response})
