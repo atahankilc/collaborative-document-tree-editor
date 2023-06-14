@@ -11,8 +11,8 @@ class ClientHandler:
         self.client_dict = {}
 
     @staticmethod
-    def add_session(session_id):
-        ClientHandler.client_dict[session_id] = Client(50001)
+    def add_session(session_id, port):
+        ClientHandler.client_dict[session_id] = Client(port)
 
     @staticmethod
     def get_session(session_id):

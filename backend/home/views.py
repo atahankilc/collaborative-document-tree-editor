@@ -1,3 +1,5 @@
+import os
+
 from django.views import View
 from django.shortcuts import render, redirect
 
@@ -14,7 +16,8 @@ class Home(View):
             request.session.create()
         session_key = request.session.session_key
         if session_key not in ClientHandler.client_dict:
-            ClientHandler.add_session(session_key)
+            port = int(os.environ['PORT'])
+            ClientHandler.add_session(session_key, port)
             print(ClientHandler.client_dict)
             response = render(request, 'home/base.html', {})
             response.delete_cookie('token')
